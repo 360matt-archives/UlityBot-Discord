@@ -6,7 +6,7 @@ client.login(config.bot.token);
 delete config.bot.token
 
 
-client.on('ready', () => {
+client.on('ready', async () => {
     try{
         const baseReady = require(`${__dirname}/base/baseReady.js`);
 
@@ -21,6 +21,12 @@ client.on('ready', () => {
         }
 
         baseReady.execute(client)
+
+        pistache = require(`${__dirname}/includes/pistache.js`)
+        /* test */
+        console.log(pistache.cache(`https://media.gettyimages.com/videos/aerial-shot-looking-down-at-sailboat-and-beautiful-clear-blue-ocean-video-id564792255?s=640x640`)
+        .then(r => console.log(r)))
+
 
     }
     catch(err){

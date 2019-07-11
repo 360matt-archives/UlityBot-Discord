@@ -1,0 +1,14 @@
+{
+    "owners": ["XXXX", "XXXXX"],
+    "bot": {
+        "token": "XXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "footer": "un jolie footer"
+    },
+    "default": {
+        "prefix": "u!",
+        "lang": "fr",
+        "private": false,
+        "embed": true,
+        "deleteCommand": true
+    }
+}
