@@ -7,9 +7,7 @@ exports.execute = (msg) => {
     _command = msg.args.shift().toLowerCase()
     msg.command = _command.replace(msg.prefix, '');
 
-    console.log()
-
-    if (fs.existsSync(`${__dirname}/../commands/${msg.command}.js`) && _command.startsWith(_command)) {
+    if (fs.existsSync(`${__dirname}/../commands/${msg.command}.js`) && _command.startsWith(msg.prefix)) {
             i = 2
             while (typeof i !== `undefined`){
                 msg.handler = require(`${__dirname}/../commands/${msg.command}.js`)
@@ -28,6 +26,7 @@ exports.execute = (msg) => {
                 msg.eco.take = require(`${__dirname}/../includes/eco.js`).take.bind(null, msg)
                 msg.eco.set = require(`${__dirname}/../includes/eco.js`).set.bind(null, msg)
                 msg.eco.reset = require(`${__dirname}/../includes/eco.js`).reset.bind(null, msg)
+                msg.color = require(`${__dirname}/../includes/color.js`).reset.bind(null, msg)
 
                 i--
                 if (i == 0) delete i

@@ -34,8 +34,8 @@ exports.get = (msg, term, args) => {
             },
             show: {
                 title: `Ping du bot`,
-                description: (time) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message`,
-                single: (time) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message`
+                description: (time, ping) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message\n\nLe ping de l'API Discord est en moyenne [[${ping} ms]]`,
+                single: (time, ping) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message et le ping de l'API Discord est en moyenne [[${ping} ms]]`
             }
         }
 
@@ -78,7 +78,16 @@ exports.get = (msg, term, args) => {
             for (var i = 0; i < args.length; i++) {
                 value = value.bind(null, args[i])
             }
-            return value().replace(`[[`, `\`\``).replace(`]]`, `\`\``);
+
+            value = value()
+            console.log(value)
+            while(value.includes(`[[`) || value.includes(`]]`)){
+                value.replace(`[[`, `\`\``).replace(`]]`, `\`\``);
+            }
+
+            console.log(value)
+
+            return value
         default: return value;
     }
 }

@@ -1,10 +1,13 @@
-const Discord = require("discord.js");
-const client = new Discord.Client();
-const config = require(`${__dirname}/data/config.json`);
+const Discord = require("discord.js")
+const client = new Discord.Client()
+const config = require(`${__dirname}/data/config.json`)
 
-client.login(config.bot.token);
+client.login(config.bot.token)
 delete config.bot.token
 
+setInterval(async () => {
+    delete require.cache
+}, 180000)
 
 client.on('ready', async () => {
     try{
@@ -21,13 +24,6 @@ client.on('ready', async () => {
         }
 
         baseReady.execute(client)
-
-        pistache = require(`${__dirname}/includes/pistache.js`)
-        /* test */
-        console.log(pistache.cache(`https://media.gettyimages.com/videos/aerial-shot-looking-down-at-sailboat-and-beautiful-clear-blue-ocean-video-id564792255?s=640x640`)
-        .then(r => console.log(r)))
-
-
     }
     catch(err){
         console.error(err)
