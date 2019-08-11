@@ -2,14 +2,14 @@ const Discord = require("discord.js");
 
 exports.post = async (msg, color, data = {}) => {
 
-    if (msg.var(`embed`) && typeof data.single === `undefined` || typeof data.title !== `undefined` || typeof data.description !== `undefined`){
-        var content = new Discord.RichEmbed()
+    if (msg.var(`embed`) && typeof data.single === `undefined` || typeof data.title !== `undefined` && typeof data.description !== `undefined`){
+        var content = new Discord.MessageEmbed()
 
         if (typeof data.color !== `undefined`){
-            content.setColor(data.color)
+            content.setColor(msg.color(data.color))
         }
         else{
-            content.setColor(color)
+            content.setColor(msg.color(color))
         }
 
         if (typeof data.footer !== `undefined`){
@@ -19,7 +19,7 @@ exports.post = async (msg, color, data = {}) => {
                 case false:
                     break
                 default:
-                    content.setColor(data.color)
+                    content.setFooter(data.footer)
             }
         }
 
@@ -31,6 +31,12 @@ exports.post = async (msg, color, data = {}) => {
                     content.setAuthor(msg.client.users.get(data.author))
             }
         }
+
+        if (typeof data.title !== `undefined` || typeof data.title !== `undefined`){
+            content.setTitle(data.title)
+            content.setDescription(data.description)
+        }
+
     }
     
     if (typeof data.code !== `undefined`){
@@ -49,29 +55,29 @@ exports.post = async (msg, color, data = {}) => {
     if (typeof data.edit !== `undefined`){
         switch(typeof data.edit.id !== `undefined`){
             case true:
-                data.edit.edit(content); return data.edit;
+                return await data.edit.edit(content)
             case false:
-                msg.client.channels.forEach(_ch => {
+                msg.client.channels.forEach(async _ch => {
                     if (_ch.messages.some(_m => _m.id === data.edit)){
-                        _ch.messages.get(data.edit).edit(content)
-                        return _ch.messages.get(data.edit)
+                        return await _ch.messages.get(data.edit).edit(content)
                     }
                 });
         }
-        console.error(`Le message spécifié n'existe pas et ne peux donc pas être édité`)
+        console.error(`Le message spécifié n'existe pas et ne peux donc pas être édité`); return false;
     }
-    else{
-        if (typeof data.channel !== `undefined`){
-            switch (typeof data.channel.id !== `undefined`){
-                case true:
-                    return data.channel.send(content)
-                case false:
-                    if (clients.channels.some(_ch => _ch.id === data.channel)){
-                        return client.channels.get(data.channel).messages.get(data.edit).send(content)
-                    }
-            }
-            console.error(`Le salon textuel spécifié n'existe pas et ne peux donc pas accueillir de message`)
 
+    if (typeof data.channel !== `undefined`){
+        switch (typeof data.channel.id !== `undefined`){
+            case true:
+                return await data.channel.send(content)
+            case false:
+                if (clients.channels.some(_ch => _ch.id === data.channel)){
+                    return await client.channels.get(data.channel).send(content)
+                }
         }
+        console.error(`Le salon textuel spécifié n'existe pas et ne peux donc pas accueillir de message`); return false;
     }
+    
+    return await msg.channel.send(content)
+    
 }

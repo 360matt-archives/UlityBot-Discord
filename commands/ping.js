@@ -1,11 +1,19 @@
 const Discord = require("discord.js")
 
-exports.permission = `allow`
+exports.data = {
+    permission: `allow`,
+    aliases: []
+}
 
 exports.run = async (msg) => {
     _oldTime = new Date
-    n = await msg.info(`ping.loading`)
-    _newTime = Number(new Date) - Number(_oldTime)
-    let ping = msg.client.ws.ping
-    msg.info(`ping.show`, _newTime, ping, {"message": n, "action": "edit"})
+    n = await msg.info({code: `ping.loading`})
+    msg.info({
+        code: `ping.show`,
+        args: [
+            new Date - _oldTime - await msg.client.ws.ping, 
+            await msg.client.ws.ping
+        ],
+        edit: n
+    })
 }

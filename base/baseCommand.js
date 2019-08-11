@@ -26,12 +26,13 @@ exports.execute = (msg) => {
                 msg.eco.take = require(`${__dirname}/../includes/eco.js`).take.bind(null, msg)
                 msg.eco.set = require(`${__dirname}/../includes/eco.js`).set.bind(null, msg)
                 msg.eco.reset = require(`${__dirname}/../includes/eco.js`).reset.bind(null, msg)
-                msg.color = require(`${__dirname}/../includes/color.js`).reset.bind(null, msg)
+                msg.color = require(`${__dirname}/../includes/color.js`).color.bind(null, msg)
 
                 i--
                 if (i == 0) delete i
             }
 
+            
             msg.cooldown.verify()
             
             if (msg.permission({

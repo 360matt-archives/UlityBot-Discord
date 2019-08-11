@@ -1,9 +1,25 @@
 const Discord = require("discord.js")
 const client = new Discord.Client()
 const config = require(`${__dirname}/data/config.json`)
+const fs = require('fs');
+aliases = []
+commandes = []
 
 client.login(config.bot.token)
 delete config.bot.token
+delete client.token
+
+fs.readdir(`${__dirname}/commands`, (err, files) => {
+    files.forEach(file => {
+        x = require(`./commands/${file}`).data
+        commandes[file.replace(`.js`, '')] = x
+
+        x.aliases.forEach(aliase => {
+            aliases[aliase] = file.replace(`.js`, '')
+        })
+    });
+});
+
 
 setInterval(async () => {
     delete require.cache
@@ -42,6 +58,8 @@ client.on('message', msg => {
                 msg.db = require(`${__dirname}/includes/db.js`)
                 msg.permission = require(`${__dirname}/includes/permission.js`).check.bind(null, msg)
                 msg.var = require(`${__dirname}/includes/checkVariables.js`).get.bind(null, msg)
+                msg.aliases = aliases
+                msg.commandes = commandes
 
                 i--;
                 if (i == 0) delete i;

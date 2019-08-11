@@ -1,7 +1,7 @@
 exports.check = (msg, data = []) => {
 
     if (typeof data.id == `undefined`) data.id = msg.member.id
-    if (typeof data.code == `undefined`) data.code = msg.handler.permission
+    if (typeof data.code == `undefined`) data.code = msg.handler.data.permission
     if (typeof data.error == `undefined`) data.error = false
     data.member = msg.guild.members.get(data.id)
 

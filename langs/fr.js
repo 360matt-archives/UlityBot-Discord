@@ -59,6 +59,9 @@ exports.get = (msg, term, args) => {
 
     }
 
+    var _term
+    var value 
+
     _term = term.split(`.`)
     value = language
 
@@ -67,9 +70,8 @@ exports.get = (msg, term, args) => {
             value = value[_term[i]]
         }
         else{
-            value = `undefined`
             console.error(`le terme "${term}" n'est pas défini`)
-            return value
+            return `undefined`
         }
     }
 
@@ -78,14 +80,12 @@ exports.get = (msg, term, args) => {
             for (var i = 0; i < args.length; i++) {
                 value = value.bind(null, args[i])
             }
-
             value = value()
-            console.log(value)
-            while(value.includes(`[[`) || value.includes(`]]`)){
-                value.replace(`[[`, `\`\``).replace(`]]`, `\`\``);
-            }
 
-            console.log(value)
+            while(value.includes('[[') || value.includes(']]')){
+                value = value.replace('\[\[', '``');
+                value = value.replace('\]\]', '``');
+            }
 
             return value
         default: return value;
