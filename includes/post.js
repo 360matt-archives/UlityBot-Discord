@@ -16,6 +16,7 @@ exports.post = async (msg, color, data = {}) => {
             switch(data.footer){
                 case true:
                     content.setFooter(msg.config.footer)
+                    break
                 case false:
                     break
                 default:
@@ -24,11 +25,19 @@ exports.post = async (msg, color, data = {}) => {
         }
 
         if (typeof data.author !== `undefined`){
-            switch(typeof data.author.id !== `undefined`){
+            switch(data.author){
                 case true:
-                    content.setAuthor(data.author)
+                    content.setAuthor(msg.member)
+                    break
                 case false:
-                    content.setAuthor(msg.client.users.get(data.author))
+                    break
+                default:
+                    switch(typeof data.author.id !== `undefined`){
+                        case true:
+                            content.setAuthor(data.author)
+                        case false:
+                            content.setAuthor(msg.client.users.get(data.author))
+                    }
             }
         }
 

@@ -1,23 +1,15 @@
-exports.color = (msg, cname) => {
-
-    switch(cname){
-        case `rouge`: return 16711680
-        case `vert`: return 65280
-        case `jaune`: return 16764482
-        case `violet`: return 9055202
+exports.color = (msg, name) => {
+    code = {
+        "#FF0000": ["rouge", "red"],
+        "#FFFF00": ["jaune", "yellow"],
+        "#8A2BE2": ["violet", "purple"],
+        "#00FF00": ["vert", "green"]
     }
-    /* FR */
 
-    switch(cname){
-        case `red`: return 16711680
-        case `green`: return 65280
-        case `yellow`: return 16764482
-        case `purple`: return 9055202
+    for (x in code){
+        if (code[x].includes(name)) return x
     }
-    /* EN */
 
-
-
-        console.error(`La couleur demandée est inconnue. Veuillez l'indiquer manuellement`)
-        return false
+    console.error(`La couleur demandée est inconnue. Veuillez l'indiquer dans l'include color.js`)
+    return false
 }

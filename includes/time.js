@@ -11,24 +11,26 @@ function convertSec(s){
     value = ``
 
     if (h == 1) value += `${h} heure `
-    if (h > 0 && h >= 2) value += `${h} heures `
+    if (h >= 2) value += `${h} heures `
     if (m == 1) value += `${m} minute `
-    if (m > 0 && m >= 2) value += `${m} minutes `
+    if (m >= 2) value += `${m} minutes `
     if (s == 1) value += `${s} seconde `
-    if (s > 0 && s >= 2) value += `${s} secondes `
+    if (s >= 2) value += `${s} secondes `
 
     return value
 }
 
-exports.time = (msg, time, type = `s`) => {
+exports.time = (msg, data = {}) => {
+    if (typeof data.type === `undefined`) data.type = `s`
+    if (data.type !== `now`) if (typeof data.time === `undefined`) return console.error(`Vous devez préciser le temps (secondes ou millisecondes) à traduire`)
     switch(type){
         case `s`:
-            return convertSec(time)
+            return convertSec(data.time)
             break;
         case `ms`:
-            return convertSec(Math.round(time)/1000)
+            return convertSec(Math.round(data.time)/1000)
             break;
-        case `timestamp`:
+        case `now`:
             return Math.round((new date).getTime()/1000)
             break;
     }

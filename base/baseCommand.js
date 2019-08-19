@@ -7,9 +7,12 @@ exports.execute = (msg) => {
     _command = msg.args.shift().toLowerCase()
     msg.command = _command.replace(msg.prefix, '');
 
+    if (typeof msg.aliases[msg.command] !== `undefined`) msg.command = msg.aliases[msg.command].replace(msg.prefix, '')
+
+
     if (fs.existsSync(`${__dirname}/../commands/${msg.command}.js`) && _command.startsWith(msg.prefix)) {
             i = 2
-            while (typeof i !== `undefined`){
+            for (var i = 0; i < 2; i++) {
                 msg.handler = require(`${__dirname}/../commands/${msg.command}.js`)
                 msg.cooldown = {}, msg.eco = {}
                 msg.cooldown.set = require(`${__dirname}/../includes/cooldown.js`).set.bind(null, msg)
@@ -26,13 +29,10 @@ exports.execute = (msg) => {
                 msg.eco.take = require(`${__dirname}/../includes/eco.js`).take.bind(null, msg)
                 msg.eco.set = require(`${__dirname}/../includes/eco.js`).set.bind(null, msg)
                 msg.eco.reset = require(`${__dirname}/../includes/eco.js`).reset.bind(null, msg)
+                msg.eco.get = require(`${__dirname}/../includes/eco.js`).get.bind(null, msg)
                 msg.color = require(`${__dirname}/../includes/color.js`).color.bind(null, msg)
-
-                i--
-                if (i == 0) delete i
             }
 
-            
             msg.cooldown.verify()
             
             if (msg.permission({
@@ -40,7 +40,7 @@ exports.execute = (msg) => {
             })){
                 msg.handler.run(msg);
                 msg.cooldown.set()
-                console.log(`>> ${msg.command} execute par ${msg.author.tag} (${msg.author.id})`)
+                console.log(`>> ${msg.command} execute par ${msg.author.tag} (${msg.author.id}) sur ${msg.guild.name} (${msg.guild.id})`)
 
             }
             if (msg.var(`deleteCommand`)) if (msg.guild.channels.has(msg.channel.id)) if (msg.channel.messages.has(msg.id)) msg.delete()

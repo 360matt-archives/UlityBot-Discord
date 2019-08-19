@@ -37,6 +37,13 @@ exports.get = (msg, term, args) => {
                 description: (time, ping) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message\n\nLe ping de l'API Discord est en moyenne [[${ping} ms]]`,
                 single: (time, ping) => `Le bot met en moyenne [[${time} ms]] pour envoyer un message et le ping de l'API Discord est en moyenne [[${ping} ms]]`
             }
+        },
+        eco: {
+            balance: {
+                title: `Votre solde actuel`,
+                description: (money) => `Vous possédez [[${money}]] Ulits`,
+                single: (money) => `Solde : Vous possédez [[${money}]] Ulits`
+            }
         }
 
 

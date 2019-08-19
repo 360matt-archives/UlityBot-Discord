@@ -1,4 +1,4 @@
-exports.get = (msg, name, ...args) => {
+exports.var = (msg, name) => {
         if (name == `lang`) {
             switch(true){
                 case msg.db.exist(`member.${msg.author.id}.lang`):
@@ -10,10 +10,10 @@ exports.get = (msg, name, ...args) => {
         }
         else{
             switch(true){
-                case msg.db.exist(`member.${msg.author.id}.lang`):
-                    return msg.db.get(`member.${msg.author.id}.lang`)
-                case msg.db.exist(`guild.${msg.guild.id}.lang`):
-                    return msg.db.get(`guild.${msg.guild.id}.lang`)
+                case msg.db.exist(`member.${msg.author.id}.${name}`):
+                    return msg.db.get(`member.${msg.author.id}.${name}`)
+                case msg.db.exist(`guild.${msg.guild.id}.${name}`):
+                    return msg.db.get(`guild.${msg.guild.id}.${name}`)
                 default: return msg.config.default[`${name}`]
             }
         }

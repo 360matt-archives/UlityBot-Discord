@@ -2,7 +2,7 @@ const Discord = require("discord.js")
 
 exports.data = {
     permission: `allow`,
-    aliases: []
+    aliases: ["latence"]
 }
 
 exports.run = async (msg) => {
