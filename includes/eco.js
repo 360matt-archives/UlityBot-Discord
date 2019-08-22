@@ -11,8 +11,8 @@ exports.give = (msg, count, member = null) => {
             _ID = msg.member.id
     }
 
-    if (msg.db.exist(`members.${_ID}.eco`)){ msg.db.add(`members.${_ID}.eco`, count) }
-    else{ msg.db.put(`members.${_ID}.eco`, count) }
+    if (msg.db.exist(`member.${_ID}.eco`)){ msg.db.add(`member.${_ID}.eco`, count) }
+    else{ msg.db.put(`member.${_ID}.eco`, count) }
 
     return true
 }
@@ -30,7 +30,15 @@ exports.take = (msg, count, member = null) => {
             _ID = msg.member.id
     }
 
-    if (msg.db.exist(`members.${_ID}.eco`)){ msg.db.take(`members.${_ID}.eco`, count) }
+    if (msg.db.exist(`member.${_ID}.eco`)){ 
+
+        if (Number(msg.db.get(`member.${_ID}.eco`)) < Number(count)){
+            msg.db.put(`member.${_ID}.eco`, 0) 
+        }
+        else{
+            msg.db.take(`member.${_ID}.eco`, count) 
+        }
+    }
 
     return true
 }
@@ -47,7 +55,7 @@ exports.set = (msg, count, member = null) => {
         case false:
             _ID = msg.member.id
     }
-    msg.db.put(`members.${_ID}.eco`, count)
+    msg.db.put(`member.${_ID}.eco`, count)
 
     return true
 }
@@ -65,7 +73,7 @@ exports.reset = (msg, member = null) => {
             _ID = msg.member.id
     }
 
-    if (msg.db.exist(`members.${_ID}.eco`)){ msg.db.delete(`members.${_ID}.eco`) }
+    if (msg.db.exist(`member.${_ID}.eco`)){ msg.db.delete(`member.${_ID}.eco`) }
     return true
 }
 
@@ -82,7 +90,7 @@ exports.get = (msg, member = null) => {
             _ID = msg.member.id
     }
 
-    if (msg.db.exist(`members.${_ID}.eco`)){ return msg.db.get(`members.${_ID}.eco`) }
+    if (msg.db.exist(`member.${_ID}.eco`)){ return msg.db.get(`member.${_ID}.eco`) }
     else { return 0 }
 }
 

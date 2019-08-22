@@ -17,6 +17,6 @@ exports.delete = (name) => { db.unset(name).write(); return true }
 
 exports.add = (name, increment) => { db.update(name, n => Number(n) + Number(increment)).write() }
 
-exports.take = () => { db.update(name, n => Number(n) - Number(increment)).write() }
+exports.take = (name, increment) => { db.update(name, n => Number(n) - Number(increment)).write() }
 
 exports.delete_array = (name, key) => {	db.get(name).pull(key).write() }

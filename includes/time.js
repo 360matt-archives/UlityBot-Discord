@@ -1,15 +1,16 @@
-function convertSec(s){
-    var d, h, m
-    m = Math.floor(s / 60)
-    s = s % 60
-    h = Math.floor(m / 60)
-    m = m % 60
-    d = Math.floor(h / 24)
-    h = h % 24
-    h += d * 24
+function convertLiterraire(ms){
+    var d, h, m, value = ``
 
-    value = ``
+    let diff = new Date(new Date(ms) - new Date())
+    
+    d = diff.getDate()-1
+    h = diff.getHours()
+    m = diff.getMinutes()
+    s = diff.getSeconds()
 
+
+    if (d == 1) value += `${d} jour `
+    if (d >= 2) value += `${d} jours `
     if (h == 1) value += `${h} heure `
     if (h >= 2) value += `${h} heures `
     if (m == 1) value += `${m} minute `
@@ -23,15 +24,12 @@ function convertSec(s){
 exports.time = (msg, data = {}) => {
     if (typeof data.type === `undefined`) data.type = `s`
     if (data.type !== `now`) if (typeof data.time === `undefined`) return console.error(`Vous devez préciser le temps (secondes ou millisecondes) à traduire`)
-    switch(type){
+    switch(data.type){
         case `s`:
-            return convertSec(data.time)
+            return convertLiterraire(data.time*1000)
             break;
         case `ms`:
-            return convertSec(Math.round(data.time)/1000)
-            break;
-        case `now`:
-            return Math.round((new date).getTime()/1000)
+            return convertLiterraire(Math.round(data.time))
             break;
     }
 }

@@ -1,8 +1,9 @@
-exports.check = (msg, data = []) => {
+exports.check = (msg, data = {}) => {
 
+    if (typeof data === `string`){ data.code = data }
     if (typeof data.id == `undefined`) data.id = msg.member.id
     if (typeof data.code == `undefined`) data.code = msg.handler.data.permission
-    if (typeof data.error == `undefined`) data.error = false
+    if (typeof data.error == `undefined`) data.error = true
     data.member = msg.guild.members.get(data.id)
 
     if (msg.config.owners.includes(data.id)) return true

@@ -10,5 +10,8 @@
         "private": false,
         "embed": true,
         "deleteCommand": true
+    },
+    "core": {
+        "cooldown": 3
     }
 }

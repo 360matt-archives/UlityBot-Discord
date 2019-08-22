@@ -30,9 +30,11 @@ fs.readdir(`${__dirname}/commands`, (err, files) => {
         x = require(`./commands/${file}`).data
         commandes[file.replace(`.js`, '')] = x
 
-        x.aliases.forEach(aliase => {
-            aliases[aliase] = file.replace(`.js`, '')
-        })
+        if (typeof x.aliases !== `undefined`){
+            x.aliases.forEach(aliase => {
+                aliases[aliase] = file.replace(`.js`, '')
+            })
+        }
     });
 });
 

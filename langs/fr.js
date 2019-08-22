@@ -43,6 +43,26 @@ exports.get = (msg, term, args) => {
                 title: `Votre solde actuel`,
                 description: (money) => `Vous possédez [[${money}]] Ulits`,
                 single: (money) => `Solde : Vous possédez [[${money}]] Ulits`
+            },
+            daily: {
+                title: `Récompense du jour`,
+                description: (money) => `Vous venez de reçevoir [[${money}]] Ulits ! Revenez demain.`,
+                single: (money) => `Vous venez de reçevoir [[${money}]] Ulits ! Revenez demain.` 
+            },
+            add: {
+                title: `Ajout de money`,
+                description: (added, id, result) => `Vous venez d'ajouter [[${added}]] Ulits à <@${id}>.\nCet utilisateur a désormais [[${result}]] Ulits !`,
+                single: (added, id, result) => `Vous venez d'ajouter [[${added}]] Ulits à <@${id}>.\nCet utilisateur a désormais [[${result}]] Ulits !` 
+            },
+            rem: {
+                title: `Retrait de money`,
+                description: (added, id, result) => `Vous venez de retirer [[${added}]] Ulits à <@${id}>.\nCet utilisateur a désormais [[${result}]] Ulits !`,
+                single: (added, id, result) => `Vous venez de retirer [[${added}]] Ulits à <@${id}>.\nCet utilisateur a désormais [[${result}]] Ulits !` 
+            },
+            set: {
+                title: `Définition de money`,
+                description: (added, id) => `Vous venez de mettre la money de <@${id}> à [[${added}]] Ulits.`,
+                single: (added, id) => `Vous venez de mettre la money de <@${id}> à [[${added}]] Ulits.` 
             }
         }
 

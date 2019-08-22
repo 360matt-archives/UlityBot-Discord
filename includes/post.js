@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 
 exports.post = async (msg, color, data = {}) => {
-
+    var content
     if (msg.var(`embed`) && typeof data.single === `undefined` || typeof data.title !== `undefined` && typeof data.description !== `undefined`){
-        var content = new Discord.MessageEmbed()
+        content = new Discord.MessageEmbed()
 
         if (typeof data.color !== `undefined`){
             content.setColor(msg.color(data.color))
@@ -59,6 +59,10 @@ exports.post = async (msg, color, data = {}) => {
         else{
             content = msg.lang(`${data.code}.single`, args)
         }
+    }
+
+    if (typeof data.single !== `undefined`){
+        content = data.single
     }
 
     if (typeof data.edit !== `undefined`){

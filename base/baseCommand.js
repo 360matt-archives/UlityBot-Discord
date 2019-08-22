@@ -31,17 +31,18 @@ exports.execute = (msg) => {
                 msg.eco.reset = require(`${__dirname}/../includes/eco.js`).reset.bind(null, msg)
                 msg.eco.get = require(`${__dirname}/../includes/eco.js`).get.bind(null, msg)
                 msg.color = require(`${__dirname}/../includes/color.js`).color.bind(null, msg)
+                msg.texte = require(`${__dirname}/../includes/texte.js`).texte.bind(null, msg)
+                msg.ts = require(`${__dirname}/../includes/ts.js`).ts
             }
 
-            msg.cooldown.verify()
-            
-            if (msg.permission({
-                error: true
-            })){
-                msg.handler.run(msg);
-                msg.cooldown.set()
-                console.log(`>> ${msg.command} execute par ${msg.author.tag} (${msg.author.id}) sur ${msg.guild.name} (${msg.guild.id})`)
-
+            if (msg.cooldown.verify()){
+                if (msg.permission({
+                    error: true
+                })){
+                    msg.handler.run(msg);
+                    msg.cooldown.set()
+                    console.log(`>> ${msg.command} execute par ${msg.author.tag} (${msg.author.id}) sur ${msg.guild.name} (${msg.guild.id})`)
+                }
             }
             if (msg.var(`deleteCommand`)) if (msg.guild.channels.has(msg.channel.id)) if (msg.channel.messages.has(msg.id)) msg.delete()
         }
