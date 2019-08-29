@@ -1,5 +1,3 @@
-const ms = require(`ms`)
-
 exports.command = (msg) => {
     if(msg.config.owners.includes(msg.author.id)) return true
     if (typeof msg.handler.data.cooldown !== `undefined`){

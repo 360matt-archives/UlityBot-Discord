@@ -33,6 +33,11 @@ exports.execute = (msg) => {
                 msg.color = require(`${__dirname}/../includes/color.js`).color.bind(null, msg)
                 msg.texte = require(`${__dirname}/../includes/texte.js`).texte.bind(null, msg)
                 msg.ts = require(`${__dirname}/../includes/ts.js`).ts
+                msg.ifArg = require(`${__dirname}/../includes/ifArg.js`).ifArg.bind(null, msg)
+                msg.ifArg.err = require(`${__dirname}/../includes/ifArg.js`).ifArg.err.bind(null, msg)
+                msg.resolve = require(`${__dirname}/../includes/resolve.js`).resolve.bind(null, msg)
+                msg.toid = require(`${__dirname}/../includes/toid.js`).toid.bind(null, msg)
+                msg.isPremium = require(`${__dirname}/../includes/isPremium.js`).isPremium.bind(null, msg)
             }
 
             if (msg.cooldown.verify()){

@@ -9,6 +9,28 @@ exports.get = (msg, term, args) => {
 
 
     const language = {
+        general: {
+            expressions: {
+                channel: "salon",
+                emojis: "emojis",
+                server: "serveur",
+                member: "membre",
+                message: "message",
+                unknown: "inconnu"
+            },
+            missing_arg: {
+                basic: {
+                    title: `${failed} Il manque un argument`,
+                    description: (num) => `La commande ne peut pas s'effectuer sans l'argument [[n°${num}]] qui n'existe pas.`,
+                    single: (num) => `La commande ne peut pas s'effectuer sans l'argument [[n°${num}]] qui n'existe pas.`
+                },
+                type: {
+                    title: `${failed} Un argument est de mauvais type`,
+                    description: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un [[${type}]]`,
+                    single: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un [[${type}]]`
+                }
+            }
+        },
         cooldown: {
             global: {
                 title: `${failed} Soufflez dans ce sac`,

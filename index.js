@@ -39,17 +39,18 @@ fs.readdir(`${__dirname}/commands`, (err, files) => {
 });
 
 
-watch(`${__dirname}`, { recursive: true }, function(evt, name) {
-    try{
-        if (name !== `${__dirname}/data/data.json` && typeof require.cache[name] !== `undefined`){
-            delete require.cache[name]
-            console.log(`Fichier rechargé`.cyan)
+try{
+    watch(`${__dirname}`, { recursive: true }, function(evt, name) {
+        try{
+            if (name !== `${__dirname}/data/data.json` && typeof require.cache[name] !== `undefined`){
+                delete require.cache[name]
+                console.log(`Fichier rechargé`.cyan)
+            }
         }
-    }
-    catch(err){
-        
-    }
-});
+        catch(err){}
+    });
+}
+catch(err){}
 
 
 setInterval(async () => {
