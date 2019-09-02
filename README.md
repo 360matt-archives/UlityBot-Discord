@@ -17,7 +17,7 @@ description: >-
 ### Version 2.0
 
 * Initialisation des scripts principaux \(index.js par exemple\)
-* Initialisation de _baseCommand_ \(cooldown, post, lang, emojis, time, eco\)
+* Initialisation de _baseCommand_ \(cooldown, post, lang, emojis, time, eco, color, texte, buy, \[...\]\)
 
 
 

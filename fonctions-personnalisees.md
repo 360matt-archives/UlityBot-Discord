@@ -7,7 +7,7 @@ description: >-
 # Fonctions personnalisées
 
 * **msg.handler** contient l'export de la commande \(run et datas\)
-* **msg.cooldown.verify\(\)** renvoie un booléan si le cooldown global est respecté
+* **msg.cooldown.verify\(\)** renvoie un booléen si le cooldown global est respecté
 * **msg.cooldown.command\(\)** renvoie un booléan si le cooldown de la commande entrée est respecté
 * **msg.no\(\)**, **msg.yes\(\)**, **msg.info\(\)**, **msg.help\(\)** envoient des messages:
 
@@ -21,10 +21,8 @@ msg.yes({
     color: msg.color(`vert`),
     footer: true | false | `footer personnalisé`,
     author: `xxxxxxxxxxxxx ID` | object,
-    
-    
-    
-    
+      
+        
 })
 ```
 
@@ -65,5 +63,35 @@ msg.eco.reset(`xxxxxxxxxxxxx ID` | object)
 /* supprime le code de la personne de la base de donnée */
 ```
 
+* **msg.ifArg\(\)** renvoie _true_ ou _false_ si l'argument existe et éventuellement s'il est de bon type:
+* **msg.ifArg.err\(\)** même effet et syntaxe que celui d'au dessus mais en envoyant une erreur dans le salon:
 
+```javascript
+msg.ifArg(arg1, arg2)
+/* arg1: numéro de l'argument commençant par 1. */
+/* arg2 (optionnel):   -> channel, salon,
+                       -> user, member, membre,
+                       -> guild, server, serveur,
+                       -> emojis
+*/
+```
 
+**msg.resolve\(\)** récupère l'object d'un salon, membre, serveur ou emojis par une ID:
+
+```javascript
+msg.ifArg(arg1, arg2)
+/* arg1: ID. */
+/* arg2 (optionnel):   -> channel, salon,
+                       -> user, member, membre,
+                       -> guild, server, serveur,
+                       -> emojis
+*/
+```
+
+* **msg.toid\(\)** renvoie l'id d'une mention utilisateur, rôle ou channel:
+
+```javascript
+msg.toid( `xxxxxxxxxxxxx` )
+```
+
+* 
