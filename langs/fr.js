@@ -4,6 +4,7 @@ exports.get = (msg, term, args) => {
     /* principaux emojis: */
     success = msg.emojis(`success`)
     failed = msg.emojis(`failed`)
+    info = msg.emojis(`info`)
 
 
 
@@ -16,7 +17,8 @@ exports.get = (msg, term, args) => {
                 server: "serveur",
                 member: "membre",
                 message: "message",
-                unknown: "inconnu"
+                unknown: "inconnu",
+                command: "commande"
             },
             missing_arg: {
                 basic: {
@@ -26,8 +28,22 @@ exports.get = (msg, term, args) => {
                 },
                 type: {
                     title: `${failed} Un argument est de mauvais type`,
-                    description: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un [[${type}]]`,
-                    single: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un [[${type}]]`
+                    description: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un(e) [[${type}]]`,
+                    single: (num, type) => `L'argument [[n°${num}]] est invalide. Il devrait évoquer un(e) [[${type}]]`
+                }
+            },
+            buy: {
+                no_buyed: {
+                    title: `${failed} L'utilisation de cette commande est payante`,
+                    description: (command, cost) => `Oh non, \nLa commande [[${command}]] requiert un achat de [[${cost} Ulits]] pour être utilisée\nEh oui, la vie est parfoie injuste`,
+                    single: (command, cost) => `La commande [[${command}]] requiert un achat de [[${cost} Ulits]] pour être utilisée`
+                }
+            },
+            premium: {
+                no_premium: {
+                    title: `${failed} Cette commande est réservée aux premiums`,
+                    description: (command) => `Oh non, \nLa commande [[${command}]] requiert un achat de la fonctionnalité premium pour être utilisée\nMais en étant premium vous pouvez bénéficier de superbes avantages.`,
+                    single: (command) => `La commande [[${command}]] requiert un achat de la fonctionnalité premium pour être utilisée.`
                 }
             }
         },
@@ -86,6 +102,44 @@ exports.get = (msg, term, args) => {
                 description: (added, id) => `Vous venez de mettre la money de <@${id}> à [[${added}]] Ulits.`,
                 single: (added, id) => `Vous venez de mettre la money de <@${id}> à [[${added}]] Ulits.` 
             }
+        },
+        buy: {
+            not_enabled: {
+                title: `${failed} Cette commande n'est pas payante`,
+                description: (command) => `La commande [[${command}]] n'est pas payante. Inutile de payer :wink:`,
+                single: (command) => `La commande [[${command}]] n'est pas payante. Inutile de payer :wink:`
+            },
+            already_buyed: {
+                title: `${failed} Cette commande a déjà été achetée`,
+                description: (command) => `Vous avez déjà acheté la commande [[${command}]]`,
+                single: (command) => `Vous avez déjà acheté la commande [[${command}]]`
+            },
+            buy: {
+                title: `${success} Dépense effectuée`,
+                description: (command) => `Vous pouvez désormais utiliser la commande [[${command}]]`,
+                single: (command) => `Vous pouvez désormais utiliser la commande [[${command}]]`
+            },
+            no_solde: {
+                title: `${failed} Vous n'avez pas assez d'argent`,
+                description: (command, cost) => `Il vous manque [[${cost} Ulits]] pour acheter la commander [[${command}]]`,
+                single: (command, cost) => `Il vous manque [[${cost} Ulits]] pour acheter la commander [[${command}]]`
+            },
+            get_price: {
+                title: `${info} Obtenir le prix d'une commande`,
+                description: `Vous pouvez utiliser la commande [[price]] pour savoir combien côute l'achat d'une commande`,
+                single: `Vous pouvez utiliser la commande [[price]] pour savoir combien côute l'achat d'une commande`
+            },
+            premium_required: {
+                title: `${failed} Achat de la commande pour les membres premium uniquement`,
+                description: (command) => `Vous n'avez pas les privilèges premium et la commande [[${command}]] exige ces privilèges pour ensuite effectuer l'achat`,
+                single: (command) => `Vous n'avez pas les privilèges premium et la commande [[${command}]] exige ces privilèges pour ensuite effectuer l'achat`               
+            },
+            price: {
+                title: `${info} Prix d'achat de la commande`,
+                description: (command, cost) => `La commande [[${command}]] coûte [[${cost}]] Ulits lors de l'achat`,
+                single: (command, cost) => `La commande [[${command}]] coûte [[${cost}]] Ulits lors de l'achat`               
+            }
+
         }
 
 
@@ -120,7 +174,7 @@ exports.get = (msg, term, args) => {
         }
         else{
             console.error(`le terme "${term}" n'est pas défini`)
-            return `undefined`
+            return false
         }
     }
 
@@ -137,6 +191,11 @@ exports.get = (msg, term, args) => {
             }
 
             return value
-        default: return value;
+        default:
+            while(value.includes('[[') || value.includes(']]')){
+                value = value.replace('\[\[', '``');
+                value = value.replace('\]\]', '``');
+            }
+            return value;
     }
 }

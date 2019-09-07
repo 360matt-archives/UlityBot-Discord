@@ -1,5 +1,6 @@
 exports.data = {
-    permission: `allow`
+    permission: `deny`,
+    dm: true
 }
 
 exports.run = async (msg) => {

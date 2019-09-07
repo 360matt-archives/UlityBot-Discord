@@ -27,13 +27,15 @@ client.login(config.bot.token)
 
 fs.readdir(`${__dirname}/commands`, (err, files) => {
     files.forEach(file => {
-        x = require(`./commands/${file}`).data
-        commandes[file.replace(`.js`, '')] = x
+        if (typeof require(`./commands/${file}`).data !== `undefined`){
+            x = require(`./commands/${file}`).data
+            commandes[file.replace(`.js`, '')] = x
 
-        if (typeof x.aliases !== `undefined`){
-            x.aliases.forEach(aliase => {
-                aliases[aliase] = file.replace(`.js`, '')
-            })
+            if (typeof x.aliases !== `undefined`){
+                x.aliases.forEach(aliase => {
+                    aliases[aliase] = file.replace(`.js`, '')
+                })
+            }
         }
     });
 });

@@ -1,14 +1,14 @@
-exports.give = (msg, count, member = null) => {
-    switch (typeof member !== `undefined`){
+exports.give = (msg, count, author = undefined) => {
+    switch (typeof author !== `undefined`){
         case true:
-            switch (typeof member.id !== `undefined`){
+            switch (typeof author.id !== `undefined`){
                 case true:
-                    _ID = member.id
+                    _ID = author.id
                 case false:
-                    _ID = member
+                    _ID = author
             }
         case false:
-            _ID = msg.member.id
+            _ID = msg.author.id
     }
 
     if (msg.db.exist(`member.${_ID}.eco`)){ msg.db.add(`member.${_ID}.eco`, count) }
@@ -17,17 +17,17 @@ exports.give = (msg, count, member = null) => {
     return true
 }
 
-exports.take = (msg, count, member = null) => {
-    switch (typeof member !== `undefined`){
+exports.take = (msg, count, author = undefined) => {
+    switch (typeof author !== `undefined`){
         case true:
-            switch (typeof member.id !== `undefined`){
+            switch (typeof author.id !== `undefined`){
                 case true:
-                    _ID = member.id
+                    _ID = author.id
                 case false:
-                    _ID = member
+                    _ID = author
             }
         case false:
-            _ID = msg.member.id
+            _ID = msg.author.id
     }
 
     if (msg.db.exist(`member.${_ID}.eco`)){ 
@@ -43,51 +43,51 @@ exports.take = (msg, count, member = null) => {
     return true
 }
 
-exports.set = (msg, count, member = null) => {
-    switch (typeof member !== `undefined`){
+exports.set = (msg, count, author = undefined) => {
+    switch (typeof author !== `undefined`){
         case true:
-            switch (typeof member.id !== `undefined`){
+            switch (typeof author.id !== `undefined`){
                 case true:
-                    _ID = member.id
+                    _ID = author.id
                 case false:
-                    _ID = member
+                    _ID = author
             }
         case false:
-            _ID = msg.member.id
+            _ID = msg.author.id
     }
     msg.db.put(`member.${_ID}.eco`, count)
 
     return true
 }
 
-exports.reset = (msg, member = null) => {
-    switch (typeof member !== `undefined`){
+exports.reset = (msg, author = undefined) => {
+    switch (typeof author !== `undefined`){
         case true:
-            switch (typeof member.id !== `undefined`){
+            switch (typeof author.id !== `undefined`){
                 case true:
-                    _ID = member.id
+                    _ID = author.id
                 case false:
-                    _ID = member
+                    _ID = author
             }
         case false:
-            _ID = msg.member.id
+            _ID = msg.author.id
     }
 
     if (msg.db.exist(`member.${_ID}.eco`)){ msg.db.delete(`member.${_ID}.eco`) }
     return true
 }
 
-exports.get = (msg, member = null) => {
-    switch (typeof member !== `undefined`){
+exports.get = (msg, author = undefined) => {
+    switch (typeof author !== `undefined`){
         case true:
-            switch (typeof member.id !== `undefined`){
+            switch (typeof author.id !== `undefined`){
                 case true:
-                    _ID = member.id
+                    _ID = author.id
                 case false:
-                    _ID = member
+                    _ID = author
             }
         case false:
-            _ID = msg.member.id
+            _ID = msg.author.id
     }
 
     if (msg.db.exist(`member.${_ID}.eco`)){ return msg.db.get(`member.${_ID}.eco`) }

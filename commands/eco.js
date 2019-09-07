@@ -1,6 +1,7 @@
 exports.data = {
     permission: `allow`,
-    aliases: ["money"]
+    aliases: ["money"],
+    dm: true
 }
 
 exports.run = async (msg) => {
