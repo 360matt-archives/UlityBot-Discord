@@ -47,6 +47,10 @@ exports.execute = (msg) => {
                 msg.buy.isEnabled = require(`${__dirname}/../includes/buy.js`).isEnabled.bind(null, msg)
                 msg.buy.getCost = require(`${__dirname}/../includes/buy.js`).getCost.bind(null, msg)
                 msg.buy.errNotPurchassed = require(`${__dirname}/../includes/buy.js`).errNotPurchassed.bind(null, msg)
+                msg.range = require(`${__dirname}/../includes/range.js`).range
+                msg.range.err = require(`${__dirname}/../includes/range.js`).range.err.bind(null, msg)
+                msg.check = require(`${__dirname}/../includes/check.js`).check.bind(null, msg)
+
             }
 
             if (!msg.cooldown.verify()){

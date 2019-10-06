@@ -41,6 +41,16 @@ exports.post = async (msg, color, data = {}) => {
             }
         }
 
+        if (typeof data.fields !== `undefined`){
+            data.fields.forEach(x => {
+                if (typeof x.title !== `undefined` && typeof x.description !== `undefined`){
+                    content.addField(x.title, x.description)
+                }
+            })
+        }
+
+
+
         if (typeof data.title !== `undefined` || typeof data.title !== `undefined`){
             content.setTitle(data.title)
             content.setDescription(data.description)

@@ -18,7 +18,10 @@ exports.get = (msg, term, args) => {
                 member: "membre",
                 message: "message",
                 unknown: "inconnu",
-                command: "commande"
+                command: "commande",
+                number: "nombre",
+                inferior: "inférieur",
+                superior: "supérieur"
             },
             missing_arg: {
                 basic: {
@@ -45,6 +48,11 @@ exports.get = (msg, term, args) => {
                     description: (command) => `Oh non, \nLa commande [[${command}]] requiert un achat de la fonctionnalité premium pour être utilisée\nMais en étant premium vous pouvez bénéficier de superbes avantages.`,
                     single: (command) => `La commande [[${command}]] requiert un achat de la fonctionnalité premium pour être utilisée.`
                 }
+            },
+            range: {
+                title: `${failed} Nombre de mauvaise rangée`,
+                description: (number, position, reference) => `Le nombre [[${number}]] doit être [[${position}]] de [[${reference}]]`,
+                single: (number, position, reference) => `Le nombre [[${number}]] doit être [[${position}]] de [[${reference}]]`
             }
         },
         cooldown: {
@@ -139,7 +147,11 @@ exports.get = (msg, term, args) => {
                 description: (command, cost) => `La commande [[${command}]] coûte [[${cost}]] Ulits lors de l'achat`,
                 single: (command, cost) => `La commande [[${command}]] coûte [[${cost}]] Ulits lors de l'achat`               
             }
-
+        },
+        usrinfo:{
+            title: `Information sur l'utilisateur`,
+            description: (member) => ``,
+            single: (member) => `` 
         }
 
 
