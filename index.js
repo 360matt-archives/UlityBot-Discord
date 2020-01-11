@@ -1,104 +1,70 @@
-const Discord = require("discord.js")
-const client = new Discord.Client()
-const config = require(`${__dirname}/data/config.json`)
-const fs = require('fs');
-const colors = require(`colors`)
-var watch = require('node-watch');
-aliases = []
-commandes = []
+const Discord = require(`discord.js`);
+const ClientManager = require(`./bases/client.js`);
+const MsgManager = require(`./bases/msg`)
+const CommandManager = require(`./bases/commands`)
+const fs = require(`fs`)
+client = new ClientManager().client;
+config = client.config;
+
+var colors = require('colors');
 
 colors.setTheme({
-    silly: 'rainbow',
-    input: 'grey',
-    verbose: 'cyan',
-    prompt: 'grey',
-    info: 'green',
-    data: 'grey',
-    help: 'cyan',
-    warn: 'yellow',
-    debug: 'blue',
-    error: 'red'
-  });
+  silly: 'rainbow',
+  input: 'grey',
+  verbose: 'cyan',
+  prompt: 'grey',
+  info: 'green',
+  data: 'grey',
+  help: 'cyan',
+  warn: 'yellow',
+  debug: 'blue',
+  error: 'red'
+});
+
 
 client.login(config.bot.token)
-.catch(err => console.error(err))
-//delete config.bot.token
-/* delete client.token */
-
-fs.readdir(`${__dirname}/commands`, (err, files) => {
-    files.forEach(file => {
-        if (typeof require(`./commands/${file}`).data !== `undefined`){
-            x = require(`./commands/${file}`).data
-            commandes[file.replace(`.js`, '')] = x
-
-            if (typeof x.aliases !== `undefined`){
-                x.aliases.forEach(aliase => {
-                    aliases[aliase] = file.replace(`.js`, '')
-                })
-            }
-        }
-    });
-});
+.catch((e) => {
+    if (e.code === "TOKEN_INVALID")
+        console.error("Le token dans le fichier de configuration n'est pas correct");
+    else
+        console.error(e)
+})
 
 
-try{
-    watch(`${__dirname}`, { recursive: true }, function(evt, name) {
-        try{
-            if (name !== `${__dirname}/data/data.json` && typeof require.cache[name] !== `undefined`){
-                delete require.cache[name]
-                console.log(`Fichier rechargé`.cyan)
-            }
-        }
-        catch(err){}
-    });
-}
-catch(err){}
+client.on("ready", () => {
+    console.log(`Bot `.grey + `connecté avec succès`.green + ` en tant que `.grey + `${client.user.tag}`.cyan)
+    client = new (require(`./bases/ready.js`))(client).exec()
+
+})
+
+client.on("message", (msg) => {
+    if (msg.author.bot)
+        return;
 
 
-setInterval(async () => {
-    delete require.cache
-}, 180000)
+    msg = new MsgManager(msg, client).msg
+    msg.prefix = msg.bestVar.withVar("prefix").withMsg(msg).exec()
 
-client.on('ready', async () => {
-    try{
-        const baseReady = require(`${__dirname}/base/baseReady.js`);
+    if (msg.content.startsWith(msg.prefix)){
+        // reconnu comme une commande
 
-        i = 2
-        while (typeof i !== `undefined`){
-            client.config = config
-            client.db = require(`${__dirname}/includes/db.js`)
-            client.var = require(`${__dirname}/includes/checkVariables.js`).var.bind(null, client)
+        msg.add(`args`, msg.content.slice(msg.prefix.length).trim().split(/ +/g));
+        msg.add(`command`, msg.args.shift().toLowerCase());
 
-            i--;
-            if (i == 0) delete i;
-        }
+        try {
+            if (fs.existsSync(`${__dirname}/commands/${msg.command}.js`)) { 
+                new CommandManager(msg, client).exec()
 
-        baseReady.execute(client)
-    }
-    catch(err){
-        console.error(err)
-    }
-});
-
-
-client.on('message', msg => {
-	try{
-        const baseCommand = require(`${__dirname}/base/baseCommand.js`);
-
-        if (msg.author.bot) return true;
-            for (var i = 0; i < 2; i++) {
-                msg.config = config
-                msg.db = require(`${__dirname}/includes/db.js`)
-                msg.permission = require(`${__dirname}/includes/permission.js`).check.bind(null, msg)
-                msg.var = require(`${__dirname}/includes/checkVariables.js`).var.bind(null, msg)
-                msg.aliases = aliases
-                msg.commandes = commandes
 
             }
+          } catch(err) {
+            console.error(err)
+          }
 
-            baseCommand.execute(msg)
+        
     }
-    catch(err){
-        console.error(err)
-    }
-});
+
+    
+
+    
+})
