@@ -122,6 +122,9 @@ module.exports = class {
             }
         }
 
+        if (text == '')
+            text = `0 seconde`
+
         return text;
 
     }

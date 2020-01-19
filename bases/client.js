@@ -17,6 +17,8 @@ module.exports = class {
             this.client.cooldown = new (require(`../includes/cooldown.js`))(this.client)
             this.client.time = new (require(`../includes/time.js`))()
             this.client.lang = new (require(`../includes/lang.js`))(this.client)
+            this.client.ticket = new (require(`../managers/tickets.js`))(this.client)
+            this.client.post = new (require(`../includes/post.js`))(this.client)
 
         }
     }

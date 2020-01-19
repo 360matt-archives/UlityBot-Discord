@@ -1,5 +1,6 @@
 module.exports = class {
 
+    
     constructor (_msg, _client){
         this.msg = _msg;
         this.client = _client;
@@ -17,6 +18,8 @@ module.exports = class {
             this.msg.removeAfter = require(`../includes/removeAfter`)
             this.msg.cooldown = new (require(`../includes/cooldown.js`))(this.client).command(this.msg.command).withMember(this.msg.author.id)
             this.msg.lang = new (require(`../includes/lang.js`))(this.client).withMsg(this.msg)
+            this.msg.ticket = new (require(`../managers/tickets.js`))(this.client).withMsg(this.msg)
+            this.msg.post = new (require(`../includes/post.js`))(this.client).withMsg(this.msg)
         }
     }
 

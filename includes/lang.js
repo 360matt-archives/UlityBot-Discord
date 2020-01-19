@@ -1,6 +1,7 @@
 module.exports = class {
     constructor (_client){
         this.client = _client
+        this.lang = "fr"
     }
 
     withMsg(_msg){
@@ -25,13 +26,23 @@ module.exports = class {
         if (!fs.existsSync(`${__dirname}/../lang/${this.lang}.js`))
             this.lang = `fr`
         
-        let value = new (require(`../lang/${this.lang}.js`))().get(_code, _args)
-
-        if (typeof value == `function`)
-            return value(_args)
-        else
-            return value
+        return new (require(`../lang/${this.lang}.js`))().get(_code, _args)
         
+    }
+
+    isSet(_code){
+        if (this.client == null || this.lang == null){
+            let errHandle = require(`../error`)
+            errHandle(`cooldown.js (ligne 36) `.yellow + `:` + ` class mal initialisée`.red)
+            return;
+        }
+
+        let fs = require(`fs`)
+
+        if (!fs.existsSync(`${__dirname}/../lang/${this.lang}.js`))
+            this.lang = `fr`
+
+        return new (require(`../lang/${this.lang}.js`))().isSet(_code)
     }
 
 }

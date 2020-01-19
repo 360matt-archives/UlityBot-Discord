@@ -1,0 +1,19 @@
+{
+    "bot": {
+        "token": "attention, c'est precieux",
+        "presence": [
+            "je stream que",
+            "je suis",
+            "un robot"
+        ]
+    },
+    "defaults": {
+        "lang": "fr",
+        "prefix": "u!",
+        "cooldown": 5
+    },
+    "staff": {
+        "owners": ["xxxxx"],
+        "supports:": ["xxxxx"]
+    }
+}
