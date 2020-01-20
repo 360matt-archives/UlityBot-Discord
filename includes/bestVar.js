@@ -38,6 +38,8 @@ module.exports = class {
                 if (this.client.config.defaults !== null)
                     if (this.client.config.defaults[this.var] !== null)
                         return this.client.config.defaults[this.var];
+                else
+                    return 'undefined'
             }
             else{
                 let errHandle = require(`../error`)

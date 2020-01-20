@@ -5,7 +5,7 @@ module.exports = class {
 
     exec (){
         let presence = this.client.config.bot.presence
-        var i = 0
+        let i = 0
     
         setInterval(() => {
             if (i>=presence.length)
@@ -30,11 +30,10 @@ module.exports = class {
                 if (littleHandler.data != null){
                     this.client.cmds[file] = littleHandler.data
 
-                    if (littleHandler.data.aliases != null){
+                    if (littleHandler.data.aliases != null)
                         littleHandler.data.aliases.forEach(x => {
                             this.client.aliases[x] = file
                         })
-                    }
 
                 }
                     

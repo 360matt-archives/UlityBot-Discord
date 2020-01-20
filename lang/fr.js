@@ -1,12 +1,30 @@
 module.exports = class {
     constructor(){
         this.language = {
+            date: {
+                year: 'année',
+                years: 'années',
+                month: 'mois',
+                months: 'mois',
+                week: 'semaine',
+                weeks: 'semaines',
+                day: 'day',
+                days: 'days',
+                second: 'seconde',
+                seconds: 'secondes'
+            },
+
             tickets: {
-                ticket_notice_title: `Informations Utiles`,
-                ticket_notice_description: (prefix) => `Dans ce ticket, détaillez votre demande.\n
+                notice_default_title: `Informations Utiles`,
+                notice_default_description: (prefix) => `Dans ce ticket, détaillez votre demande.\n
                 Apportez au staff les informations nécessaires si besoin (pseudo, motifs, ...).
                 Mais jamais vos mots de passes ou informations sensibles :rage:
+                ${this.language.tickets.notice_footer(prefix)}`,
 
+                notice_custom_title: `Informations Utiles`,
+                notice_custom_description: (prefix, text) => `${text}\n${this.language.tickets.notice_footer(prefix)}`,
+
+                notice_footer: (prefix) => `
                 Parlez courtois et avec politesse.
                 Le staff se réserve le droit de vous sanctionner pour abus
                 (Y compris le staff du bot Ulity)
@@ -22,15 +40,17 @@ module.exports = class {
 
     parseCode(_code){
         let final = this.language
+
         _code.split('.').forEach(i => {
-            if (typeof final[i] !== `undefined`) final = final[i]
-            else return 'undefined'
+            final = final[i]; 
         })
+
         return final
     }
 
     get(_code, args){
         let value = this.parseCode(_code)
+
         switch (typeof value) {
             case 'function': return value(args);
             default: return value;

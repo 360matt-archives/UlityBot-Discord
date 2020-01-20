@@ -188,14 +188,21 @@ module.exports = class {
     }
 
     writeContent_LvL4 (){
-        if (typeof this.msg !== `undefined`){
-            // try pour éviter l'erreur "id of null"
-            try{
-                this.msg.post.withChannel(this.tck_channel.id).exec({code: 'tickets.ticket_notice'})
-            }
-            catch(e){}
-        }
+        // try pour éviter l'erreur "id of null"
+        try{
+            let custom = this.client.bestVar.withGuild(this.guild_id).withVar('ticket_text').exec()
 
+            let posting = this.client.post.withChannel(this.tck_channel.id)
+
+            if (typeof this.msg !== `undefined`)
+                posting = posting.withLang(this.msg.lang_name)
+                
+            if (custom == 'undefined')
+                posting.exec({code: 'tickets.notice_default'})
+            else
+                posting.exec({code: 'tickets.notice_custom'})
+        }
+        catch(e){}
     }
 
     // créer un ticket tout en vérifiant si tout est en ordre

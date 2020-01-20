@@ -39,7 +39,7 @@ module.exports = class {
         if (new Date().getTime() >= this.client.db.get(`members.${this.id}.cooldown.${this.type}`))
             return true
         else
-            false
+            return false
     }
 
     reset (){

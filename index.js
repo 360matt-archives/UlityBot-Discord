@@ -6,7 +6,7 @@ const fs = require(`fs`)
 client = new ClientManager().client;
 config = client.config;
 
-var colors = require('colors');
+let colors = require('colors');
 
 colors.setTheme({
   silly: 'rainbow',
@@ -60,11 +60,6 @@ client.on("message", (msg) => {
           } catch(err) {
             console.error(err)
           }
-
-        
+          
     }
-
-    
-
-    
 })

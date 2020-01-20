@@ -1,4 +1,14 @@
 module.exports = class {
+
+    constructor (_client) {
+        this.client = _client
+        this.lang = new (require(`./lang.js`))(_client)
+    }
+
+    withLang(_lang){
+        this.lang = new (require(`./lang.js`))(client).withLang(_lang)
+    }
+
     withDate (_date){
         this.type = `date`
         this.value = _date
@@ -28,8 +38,8 @@ module.exports = class {
     }
 
     initsec () {
-        var now = new Date()
-        var sec
+        let now = new Date()
+        let sec
 
         if (this.type == `s`)
             sec = this.value
@@ -54,7 +64,7 @@ module.exports = class {
             return;
         }
 
-        var sec = this.initsec()
+        let sec = this.initsec()
 
         let y = Math.floor(sec/(60*60*24*7*365))
         sec = sec - (y*60*60*24*7*365)
@@ -76,54 +86,59 @@ module.exports = class {
 
         const obj = {
             0: {
-                name: "année",
+                single: this.lang.get('date.year'),
+                plurial: this.lang.get('date.years'),
                 value: y
             },
             1: {
-                name: "mois",
+                single: this.lang.get('date.month'),
+                plurial: this.lang.get('date.months'),
                 value: mo
             },
             2: {
-                name: "semaine",
+                single: this.lang.get('date.week'),
+                plurial: this.lang.get('date.weeks'),
                 value: w
             },
             3: {
-                name: "jour",
+                single: this.lang.get('date.day'),
+                plurial: this.lang.get('date.days'),
                 value: d
             },
             4: {
-                name: "heure",
+                single: this.lang.get('date.hour'),
+                plurial: this.lang.get('date.hours'),
                 value: h
             },
             5: {
-                name: "minute",
+                single: this.lang.get('date.minute'),
+                plurial: this.lang.get('date.minutes'),
                 value: mins
             },
             6: {
-                name: "seconde",
+                single: this.lang.get('date.second'),
+                plurial: this.lang.get('date.seconds'),
                 value: sec
             }
         }
 
-        var text = ""
-        var i = -1
+        let text = ""
+        let i = -1
         
         for (let x in obj){
             i++
             if (obj[i].value != 0){
-                if (text != ``)
-                    text = text.concat(`, `)
-                if (obj[i].name == `mois`)
-                    text = text.concat(`${obj[i].value} mois`)
+                if (text != '')
+                    text = text.concat(', ')
                 else if (obj[i].value == 1)
-                    text = text.concat(`1 ${obj[i].name}`)
+                    text = text.concat(`1 ${obj[i].single}`)
                 else
-                    text = text.concat(`${obj[i].value} ${obj[i].name}s`)
+                    text = text.concat(`${obj[i].value} ${obj[i].plurial}`)
             }
         }
 
         if (text == '')
-            text = `0 seconde`
+            text = `0 ${this.lang.get('date.second')}`
 
         return text;
 

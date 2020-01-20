@@ -6,7 +6,7 @@ module.exports = class {
 
     withMsg (_msg){
         this.channel = _msg.channel
-        this.langClass = _msg.lang
+        this.langClass = this.langClass.withLang(_msg.lang_name)
         return this
     }
 
@@ -15,16 +15,18 @@ module.exports = class {
         return this
     }
 
+    withLang (_lang){
+        this.langClass = this.langClass.withLang(_lang)
+        return this
+    }
 
     isEmbed(data){
         try {
-            
 
             let Discord = require(`discord.js`)
             let Embed = new Discord.MessageEmbed()
-            .setTitle(this.langClass.get(`${data.code}_title`))
-            .setDescription(this.langClass.get(`${data.code}_description`))
-
+            .setTitle(this.langClass.get(`${data.code}_title`, data.args || null))
+            .setDescription(this.langClass.get(`${data.code}_description`, data.args || null))
 
             if (typeof data.footer !== `undefined`)
                 Embed.setFooter(data.footer)
@@ -32,9 +34,6 @@ module.exports = class {
                 Embed.setFooter(data.color)
             if (typeof data.author !== `undefined`)
                 Embed.setFooter(data.author)
-
-
-            
 
             this.channel.send(Embed).catch(e => {})
 
