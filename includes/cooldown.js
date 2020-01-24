@@ -9,8 +9,7 @@ module.exports = class {
 
     getSetting (){
         if (this.type == null || this.client == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 13):`.yellow + ` Type `.red + ` command/global` + ` inprécisé`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
         else{
@@ -25,8 +24,7 @@ module.exports = class {
 
     isThere (){
         if (this.id == null || this.client == null || this.type == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 29) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 
@@ -44,8 +42,7 @@ module.exports = class {
 
     reset (){
         if (this.id == null || this.client == null || this.type == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 45) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 
@@ -56,8 +53,7 @@ module.exports = class {
     make (){
 
         if (this.id == null || this.client == null || this.type == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 60) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 
@@ -66,8 +62,7 @@ module.exports = class {
 
     getLeft (){
         if (this.id == null || this.client == null || this.type == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 70) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 

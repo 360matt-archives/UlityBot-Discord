@@ -3,8 +3,8 @@ module.exports.data = {
 }
 
 
-module.exports.run = (msg, client, args) => {
+module.exports.run = async (msg, client, args) => {
     msg.channel.send("Truc")
 
-    msg.ticket.create()
+    console.log(await msg.ticket.create())
 }

@@ -16,8 +16,7 @@ module.exports = class {
 
     get (_code, ..._args){
         if (this.client == null || this.lang == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 29) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 
@@ -32,8 +31,7 @@ module.exports = class {
 
     isSet(_code){
         if (this.client == null || this.lang == null){
-            let errHandle = require(`../error`)
-            errHandle(`cooldown.js (ligne 36) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 

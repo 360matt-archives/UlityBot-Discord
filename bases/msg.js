@@ -13,7 +13,7 @@ module.exports = class {
     reset (_msg, _client = this.client) {
         this.msg = _msg;
 
-        for (var i=0; i<=2; i++){
+        for (let i=0; i<=2; i++){
             this.msg.bestVar = new (require(`../includes/bestVar.js`))(this.client).withMsg(this.msg)
             this.msg.lang_name = this.msg.bestVar.withVar(`lang`)
             this.msg.removeAfter = require(`../includes/removeAfter`)

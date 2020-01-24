@@ -9,10 +9,8 @@ module.exports = class {
     withPermission (_permission){ this.permission = _permission; return this; }
 
     exec(){
-
         if (this.client == null || this.member == null || this.guild == null){
-            let errHandle = require(`../error`)
-            errHandle(`hasPermission.js (ligne 15) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 
@@ -25,10 +23,8 @@ module.exports = class {
             return this.client.guilds.get(this.guild).members.resolve(this.member).hasPermission(this.permission)
         }
         catch(e){
-            if (e.code != "BITFIELD_INVALID"){
-                let errHandle = require(`../error`)
-                errHandle(e)
-            }
+            if (e.code != "BITFIELD_INVALID")
+                console.error(e)
         }
 
         return false;

@@ -59,8 +59,7 @@ module.exports = class {
 
     exec () {
         if (this.relative == null || this.type == null || this.value == null){
-            let errHandle = require(`../error`)
-            errHandle(`time.js (ligne 53) `.yellow + `:` + ` class mal initialisée`.red)
+            console.error(` class mal initialisée`.red)
             return;
         }
 

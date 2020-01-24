@@ -43,7 +43,7 @@ module.exports = class {
             }
             else{
                 let errHandle = require(`../error`)
-                errHandle(`bestVar.js (ligne 44) `.yellow + `:` + ` class mal initialisée`.red)
+                console.error(` class mal initialisée`.red)
                 return;
             }
         }

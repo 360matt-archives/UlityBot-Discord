@@ -9,7 +9,7 @@ module.exports = class {
 
     reset (_client = this.client) {
         this.client = _client;
-        for (var i=0; i<=2; i++){
+        for (let i=0; i<=2; i++){
             this.client.db = require(`../includes/db.js`)
             this.client.bestVar = new (require(`../includes/bestVar.js`))(this.client)
             this.client.config = require(`../data/config.json`)
