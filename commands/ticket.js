@@ -2,7 +2,7 @@ module.exports.data = {
     cooldown: 20
 }
 
-module.exports.run = async (msg, client, args) => {
+module.exports.run = (msg, client, args) => {
 
     if (msg.ticket.exist())
         msg.post.exec({

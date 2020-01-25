@@ -257,20 +257,20 @@ module.exports = class {
         return 0
     }
 
-    delete (_arg_tck_id){
+    delete (id = null){
         return new Promise(async (resolve, reject) => {
-            if (!_arg_tck_id){
-                console.error(`class mal initialisée`.red)
-                reject('class mal initialisée')
-            }
-            else{
-                let toSuppr = await this.client.channels.fetch(_arg_tck_id, false)
+            if (!id)
+                if (this.exist())
+                    id = this.getID()
+                else return
 
-                if (toSuppr)
-                    toSuppr.delete().then(() => {
-                        resolve()
-                    })
-            }
+            let toSuppr = await this.client.channels.fetch(id, false)
+
+            if (toSuppr)
+                toSuppr.delete().then(() => {
+                    resolve()
+                })
+            
         })
     }
 }
