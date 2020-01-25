@@ -1,0 +1,37 @@
+{
+  "name": "ulitybot",
+  "version": "4.0.0",
+  "description": "un bot francais multifonction developpe par passion",
+  "main": "index.js",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "discord.js": "github:discordjs/discord.js",
+    "fs": "^0.0.1-security",
+    "lowdb": "^1.0.0",
+    "node-gyp": "^6.1.0",
+    "update": "^0.7.4",
+    "upgrade": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/360matt/UlityBot.git"
+  },
+  "keywords": [
+    "bot",
+    "discord",
+    "french",
+    "moderation",
+    "fun",
+    "utils"
+  ],
+  "author": "360matt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/360matt/UlityBot/issues"
+  },
+  "homepage": "https://github.com/360matt/UlityBot#readme"
+}

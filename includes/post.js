@@ -45,7 +45,7 @@ module.exports = class {
 
     isSingle(data){
         try {
-            this.channel.send(this.langClass.get(`${data.code}_single`)).catch(e => {})
+            this.channel.send(this.langClass.get(`${data.code}_single`, data.args || null)).catch(e => {})
         } catch (e) {
             console.error(e)
         }
@@ -54,10 +54,10 @@ module.exports = class {
     exec (data){
 
         if (typeof data.code === `undefined`) return false
-            if (this.langClass.isSet(`${data.code}_title`))
-                this.isEmbed(data)
-            else if (this.langClass.isSet(`${data.code}_single`))
-                this.isSingle(data)
+        if (this.langClass.isSet(`${data.code}_title`) && this.langClass.isSet(`${data.code}_description`))
+            this.isEmbed(data)
+        else if (this.langClass.isSet(`${data.code}_single`))
+            this.isSingle(data)
 
     }
 

@@ -15,13 +15,13 @@ module.exports = class {
             },
 
             tickets: {
-                notice_default_title: `Informations Utiles`,
+                notice_default_title: 'Informations Utiles',
                 notice_default_description: (prefix) => `Dans ce ticket, détaillez votre demande.\n
                 Apportez au staff les informations nécessaires si besoin (pseudo, motifs, ...).
                 Mais jamais vos mots de passes ou informations sensibles :rage:
                 ${this.language.tickets.notice_footer(prefix)}`,
 
-                notice_custom_title: `Informations Utiles`,
+                notice_custom_title: 'Informations Utiles',
                 notice_custom_description: (prefix, text) => `${text}\n${this.language.tickets.notice_footer(prefix)}`,
 
                 notice_footer: (prefix) => `
@@ -32,7 +32,12 @@ module.exports = class {
                 __**Pour gérer ce ticket**__\n
                 \`\`${prefix}close\`\` : pour fermer le ticket\n
                 \`\`${prefix}add <@Mention | ID>\`\` : ajouter une personne au ticket\n
-                \`\`${prefix}remove <@Mention | ID>\`\` : supprimer les personnes au ticket\n`
+                \`\`${prefix}remove <@Mention | ID>\`\` : supprimer les personnes au ticket\n`,
+
+
+
+                already_created_single: (id) => `Ton ticket existe déjà, il se trouve là: <#${id}>, mais si il est là ! Rooooooh`,
+                created_single: (id) => `Ooooh :open_mouth: un nouveau ticket viens d'apparaitre: <#${id}> `
 
             }
         }
@@ -58,7 +63,7 @@ module.exports = class {
     }
 
     isSet(_code){
-        if (this.parseCode(_code) !== `undefined`) return true
+        if (typeof this.parseCode(_code) !== `undefined`) return true
         else return false
     }
 

@@ -231,34 +231,30 @@ module.exports = class {
         })
     }
 
-    async exist (id = null){
-        return new Promise(async (resolve, reject) => {
-            if (!id){
-                if (!(this.id_member && this.guild_id)){
-                    console.error(`class mal initialisée`.red)
-                    return reject('class mal initialisée') // en: class not initialized
-                }
+    exist (id = null){
+        if (!id){
+            if (!(this.id_member && this.guild_id))
+                return console.error(`class mal initialisée`.red)
 
-                id = this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)
+            id = this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)
 
-                if (id == 'undefined') // in my custom module, if typeof undefined return it in text format
-                    resolve(false)
-            }
+            if (id == 'undefined')
+                return false
+        }
 
-            if (!this.client.channels.has(id))
-                return resolve(false)
-
-            resolve(true)
+        if (!this.client.channels.has(id))
+            return false
+        else
+            return true
             
-        })
     }
 
     getID (){
         if (!(this.id_member && this.guild_id))
             return console.error(`class mal initialisée`.red)
         else if (this.exist())
-            return this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)).id
-        else return 0
+            return this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)
+        return 0
     }
 
     delete (_arg_tck_id){
