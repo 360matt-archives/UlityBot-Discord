@@ -64,7 +64,7 @@ module.exports = class {
     
                         this.cat = x
     
-                        await this.verifySupport_LvL2()
+                        resolve(await this.verifySupport_LvL2())
                         // on passe à l'étape suivante
                     })
     
@@ -73,7 +73,7 @@ module.exports = class {
                     this.cat =  this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.ticket_category`))
                     // si tout est en ordre, sortons directement la valeur de celle de la bdd
     
-                    await this.verifySupport_LvL2()
+                    resolve(await this.verifySupport_LvL2())
                     // on passe à l'étape suivante
             }
 
@@ -108,7 +108,7 @@ module.exports = class {
                             // enregistrons le role dans la bdd
 
 
-                        await this.verifyTicket_LvL3()
+                        resolve(await this.verifyTicket_LvL3())
                         // on passe à l'étape suivante
                     })
 
@@ -122,7 +122,7 @@ module.exports = class {
                         this.cat.overwritePermissions(this.support_role, { VIEW_CHANNEL: true, SEND_MESSAGES: true, MANAGE_MESSAGES: true, MANAGE_CHANNELS: true});
                     }
 
-                    await this.verifyTicket_LvL3()
+                    resolve(await this.verifyTicket_LvL3())
                     // on passe à l'étape suivante
 
             }
@@ -172,14 +172,14 @@ module.exports = class {
                             // ajout à la bdd
 
 
-                            await this.writeContent_LvL4()
+                            resolve(await this.writeContent_LvL4())
                             // on passe à l'étape suivante
                         })
 
                     default:
                         // on recupère de la bdd
                         this.tck_channel = this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`))
-                        await this.writeContent_LvL4()
+                        resolve(await this.writeContent_LvL4())
                         // on passe à l'étape suivante
                         
                 }
@@ -203,6 +203,8 @@ module.exports = class {
                     posting.exec({code: 'tickets.notice_default'})
                 else
                     posting.exec({code: 'tickets.notice_custom'})
+                
+                resolve()
             }
             catch(e){}
         })
@@ -219,51 +221,60 @@ module.exports = class {
             else{
                 this.guild_handler = this.client.guilds.resolve(this.guild_id)
 
-                this.verifyCategory_LvL1()
+                this.verifyCategory_LvL1().then(() => {
+                    resolve(this.tck_channel.id)
+                })
                     
-                resolve(this.tck_channel.id)
+                
 
             }
         })
     }
 
-    exist (_a = null){
-        if (this.id_member == null || this.guild_id == null){
-            console.error(`class mal initialisée`.red)
-            return;
-        }
-        else{
-            switch (true){
-                case !this.client.db.exist(`guilds.${this.guild_id}.tickets.${this.id_member || null}`):
-                case this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member || _a}`)) == null:
-                    return false
-                default:
-                    return true
+    async exist (id = null){
+        return new Promise(async (resolve, reject) => {
+            if (!id){
+                if (!(this.id_member && this.guild_id)){
+                    console.error(`class mal initialisée`.red)
+                    return reject('class mal initialisée') // en: class not initialized
+                }
+
+                id = this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)
+
+                if (id == 'undefined') // in my custom module, if typeof undefined return it in text format
+                    resolve(false)
             }
-        }
+
+            if (!this.client.channels.has(id))
+                return resolve(false)
+
+            resolve(true)
+            
+        })
     }
 
     getID (){
-        if (this.id_member == null || this.guild_id == null){
-            console.error(`class mal initialisée`.red)
-            return;
-        }
-        else
-            if (this.exist())
-                return this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)).id
+        if (!(this.id_member && this.guild_id))
+            return console.error(`class mal initialisée`.red)
+        else if (this.exist())
+            return this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)).id
+        else return 0
     }
 
     delete (_arg_tck_id){
-        if (!_arg_tck_id){
-            console.error(`class mal initialisée`.red)
-            return;
-        }
-        else{
-            let toSuppr = this.guild_handler.channels.resolve(_arg_tck_id)
+        return new Promise(async (resolve, reject) => {
+            if (!_arg_tck_id){
+                console.error(`class mal initialisée`.red)
+                reject('class mal initialisée')
+            }
+            else{
+                let toSuppr = await this.client.channels.fetch(_arg_tck_id, false)
 
-            if (toSuppr)
-                toSuppr.delete()
-        }
+                if (toSuppr)
+                    toSuppr.delete().then(() => {
+                        resolve()
+                    })
+            }
+        })
     }
-
 }

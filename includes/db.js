@@ -8,7 +8,7 @@ exports.db = () => {return db}
 
 exports.get = (name) => { 
     let response = db.get(name).value()
-    return (response == null) ? 'undefined' : response
+    return (!response) ? 'undefined' : response
 }
 
 exports.set = (name, value) => { db.set(name, value).write() }
