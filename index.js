@@ -43,7 +43,7 @@ client.on("message", (msg) => {
 
 
     msg = new MsgManager(msg, client).msg
-    msg.prefix = msg.bestVar.withVar("prefix").withMsg(msg).exec()
+    msg.prefix = msg.bestVar.withVar("prefix").withMsg(msg).get()
 
     if (msg.content.startsWith(msg.prefix)){
         // reconnu comme une commande

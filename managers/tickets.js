@@ -40,7 +40,7 @@ module.exports = class {
         return new Promise(async resolve => {
             switch (true){
                 case !this.client.db.exist(`guilds.${this.guild_id}.settings.ticket_category`):
-                case this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.ticket_category`)) == null:
+                case !this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.ticket_category`)):
                     // si la catégorie ticket existe pas: 
     
                     // créons-là et définissons les permissions
@@ -84,7 +84,7 @@ module.exports = class {
         return new Promise(async resolve => {
             switch (true){
                 case !this.client.db.exist(`guilds.${this.guild_id}.settings.support_role`):
-                case this.guild_handler.roles.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)) == null:
+                case !this.guild_handler.roles.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)):
                     // si le role Support n'existe pas: 
 
                     // créons-le et définissons les permissions !!! pour la catégorie !!!
@@ -118,9 +118,8 @@ module.exports = class {
                     let ow = this.cat.permissionOverwrites.get(this.support_role.id);
 
                     // si le support n'a plus les permissions, reset
-                    if (ow && ow.SEND_MESSAGES === false){
+                    if (ow && ow.SEND_MESSAGES === false)
                         this.cat.overwritePermissions(this.support_role, { VIEW_CHANNEL: true, SEND_MESSAGES: true, MANAGE_MESSAGES: true, MANAGE_CHANNELS: true});
-                    }
 
                     resolve(await this.verifyTicket_LvL3())
                     // on passe à l'étape suivante
@@ -139,7 +138,7 @@ module.exports = class {
                 // si il n'a pas déjà un ticket existant
                 switch (true){
                     case !this.client.db.exist(`guilds.${this.guild_id}.tickets.${this.id_member}`):
-                    case this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)) == null:
+                    case !this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`)):
 
                         // créons le ticket
                         this.guild_handler.channels.create(`${member_handler.user.username}`, {
@@ -169,6 +168,7 @@ module.exports = class {
                                 })
 
                             this.client.db.set(`guilds.${this.guild_id}.tickets.${this.id_member}`, x.id)
+                            this.client.db.set(`tickets.${x.id}`, {guild_id: this.guild_id, member_id: this.id_member})
                             // ajout à la bdd
 
 
@@ -179,7 +179,7 @@ module.exports = class {
                     default:
                         // on recupère de la bdd
                         this.tck_channel = this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.tickets.${this.id_member}`))
-                        resolve(await this.writeContent_LvL4())
+                        resolve()
                         // on passe à l'étape suivante
                         
                 }
@@ -189,31 +189,32 @@ module.exports = class {
 
     writeContent_LvL4 (){
         return new Promise(async resolve => {
-            // try pour éviter l'erreur "id of null"
-            try{
-                let custom = this.client.bestVar.withGuild(this.guild_id).withVar('ticket_text').exec()
+            try {
+                let b_var = this.client.bestVar.withGuild(this.guild_id)
+
+                let custom = b_var.withVar('ticket_text').get()
                 // texte custom
-
+    
                 let posting = this.client.post.withChannel(this.tck_channel.id)
-
-                if (typeof this.msg !== `undefined`)
-                    posting = posting.withLang(this.msg.lang_name)
-                    
-                if (custom == 'undefined')
-                    posting.exec({code: 'tickets.notice_default'})
-                else
-                    posting.exec({code: 'tickets.notice_custom'})
+                let prefix = b_var.withVar('prefix').get()
+    
+                posting = posting.withLang(b_var.withVar('lang').get())
                 
+    
+                if (!custom)
+                    posting.exec({code: 'tickets.notice_default', args: prefix})
+                else
+                    posting.exec({code: 'tickets.notice_custom', args: [prefix, custom]})
+                    
                 resolve()
-            }
-            catch(e){}
+            } catch (e) {}
         })
     }
 
     // créer un ticket tout en vérifiant si tout est en ordre
     async create (){
         return new Promise(async (resolve, reject) => {
-            if (this.id_member == null || this.guild_id == null){
+            if (!(this.id_member && this.guild_id)){
                 console.error(`class mal initialisée`.red)
                 reject('class mal initialisée')
                 return;
@@ -242,11 +243,20 @@ module.exports = class {
                 return false
         }
 
-        if (!this.client.channels.has(id))
+        let exist = this.client.db.exist(`tickets.${id}`)
+
+
+        if (!this.client.channels.has(id)){
+            if (exist)
+                this.client.db.delete(`tickets.${id}`)
             return false
-        else
+        }            
+        else{
+            if (!exist)
+                this.delete(id)
+
             return true
-            
+        }
     }
 
     getID (){
@@ -264,10 +274,15 @@ module.exports = class {
                     id = this.getID()
                 else return
 
-            let toSuppr = await this.client.channels.fetch(id, false)
+            if (this.client.channels.has(id))
+                this.client.channels.resolve(id).delete().then(() => {
+                    let data = this.client.db.get(`tickets.${id}`)
 
-            if (toSuppr)
-                toSuppr.delete().then(() => {
+                    if (this.client.db.exist(`guilds.${data.guild_id}.tickets.${data.member_id}`))
+                        this.client.db.delete(`guilds.${data.guild_id}.tickets.${data.member_id}`)
+
+                    this.client.db.delete(`tickets.${id}`)
+
                     resolve()
                 })
             
