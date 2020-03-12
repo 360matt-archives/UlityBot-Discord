@@ -3,6 +3,7 @@ module.exports.data = {
 }
 
 module.exports.run = (msg, client, args) => {
+    console.log(msg.ticket.getID())
 
     if (msg.ticket.exist())
         msg.post.exec({

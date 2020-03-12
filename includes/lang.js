@@ -14,7 +14,7 @@ module.exports = class {
         return this
     }
 
-    get (_code, ..._args){
+    get (_code, _args){
         if (this.client == null || this.lang == null){
             console.error(` class mal initialisée`.red)
             return;
@@ -25,7 +25,7 @@ module.exports = class {
         if (!fs.existsSync(`${__dirname}/../lang/${this.lang}.js`))
             this.lang = `fr`
         
-        return new (require(`../lang/${this.lang}.js`))().get(_code, _args)
+        return new (require(`../lang/${this.lang}.js`))().get(_code, Array.isArray(_args) ? _args : [_args])
         
     }
 

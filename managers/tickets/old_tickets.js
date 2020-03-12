@@ -40,7 +40,7 @@ module.exports = class {
         return new Promise(async resolve => {
             switch (true){
                 case !this.client.db.exist(`guilds.${this.guild_id}.settings.ticket_category`):
-                case !this.guild_handler.channels.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.ticket_category`)):
+                case !this.guild_handler.channels.has(this.client.db.get(`guilds.${this.guild_id}.settings.ticket_category`)):
                     // si la catégorie ticket existe pas: 
     
                     // créons-là et définissons les permissions
@@ -50,14 +50,7 @@ module.exports = class {
                     }).catch(e => {console.log(e)})
                     .then(async x => {
                         // définnissons les permissions pour @everyone
-                        x.overwritePermissions({
-                            permissionOverwrites: [
-                              {
-                                 id: this.guild_id,
-                                 deny: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
-                              },
-                            ]
-                        });
+                        x.updateOverwrite(this.guild_id, { VIEW_CHANNEL: false, SEND_MESSAGES: false});
     
                         this.client.db.set(`guilds.${this.guild_id}.settings.ticket_category`, x.id)
                         // enregistrons-là dans la bdd
@@ -84,28 +77,17 @@ module.exports = class {
         return new Promise(async resolve => {
             switch (true){
                 case !this.client.db.exist(`guilds.${this.guild_id}.settings.support_role`):
-                case !this.guild_handler.roles.resolve(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)):
+                case !this.guild_handler.roles.has(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)):
                     // si le role Support n'existe pas: 
 
                     // créons-le et définissons les permissions !!! pour la catégorie !!!
-                    this.support_role = await this.guild_handler.roles.create({data: {name: `Support`}})
+                    this.support_role = this.guild_handler.roles.create({data: {name: `Support`}})
                     .then(async x => {
-                        this.cat.overwritePermissions({
-                            permissionOverwrites: [
-                                {
-                                    id: this.guild_id,
-                                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
-                                },
-                                {
-                                    id: x.id,
-                                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_CHANNELS'],
-                                }   
-                            ]
-                            })
-                            // autoriser le support aux autorisations essentielles
+                        this.cat.updateOverwrite(x.id, { VIEW_CHANNEL: true, SEND_MESSAGES: true, MANAGE_MESSAGES: true, MANAGE_CHANNELS: true});
+                        // autoriser le support aux autorisations essentielles
             
-                            this.client.db.set(`guilds.${this.guild_id}.settings.support_role`, x.id)
-                            // enregistrons le role dans la bdd
+                        this.client.db.set(`guilds.${this.guild_id}.settings.support_role`, x.id)
+                        // enregistrons le role dans la bdd
 
 
                         resolve(await this.verifyTicket_LvL3())
@@ -119,7 +101,7 @@ module.exports = class {
 
                     // si le support n'a plus les permissions, reset
                     if (ow && ow.SEND_MESSAGES === false)
-                        this.cat.overwritePermissions(this.support_role, { VIEW_CHANNEL: true, SEND_MESSAGES: true, MANAGE_MESSAGES: true, MANAGE_CHANNELS: true});
+                        this.cat.updateOverwrite(this.support_role.id, { VIEW_CHANNEL: true, SEND_MESSAGES: true, MANAGE_MESSAGES: true, MANAGE_CHANNELS: true});
 
                     resolve(await this.verifyTicket_LvL3())
                     // on passe à l'étape suivante
@@ -130,7 +112,7 @@ module.exports = class {
 
     async verifyTicket_LvL3 () {
         return new Promise(async resolve => {
-            if (this.guild_handler.members.resolve(this.id_member) != null){
+            if (this.guild_handler.members.has(this.id_member)){
                 // si le membre existe
 
                 let member_handler = this.guild_handler.members.resolve(this.id_member)
@@ -148,24 +130,9 @@ module.exports = class {
                         .then(async x => {
                             this.tck_channel = x
 
-                            // définissons les permissions
-                            x.lockPermissions()
-                            x.overwritePermissions({
-                                permissionOverwrites: [
-                                    {
-                                        id: this.guild_id,
-                                        deny: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
-                                    },
-                                    {
-                                        id: this.support_role.id,
-                                        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_CHANNELS'],
-                                    },
-                                    {
-                                        id: this.id_member,
-                                        allow: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"]
-                                    }
-                                ]
-                                })
+                            // définissons les permissions                            
+                            x.updateOverwrite(this.id_member, { VIEW_CHANNEL: true, SEND_MESSAGES: true, EMBED_LINKS: true });
+                            
 
                             this.client.db.set(`guilds.${this.guild_id}.tickets.${this.id_member}`, x.id)
                             this.client.db.set(`tickets.${x.id}`, {guild_id: this.guild_id, member_id: this.id_member})
@@ -221,18 +188,17 @@ module.exports = class {
             }
             else{
                 this.guild_handler = this.client.guilds.resolve(this.guild_id)
-
+    
                 this.verifyCategory_LvL1().then(() => {
-                    resolve(this.tck_channel.id)
+                    try {
+                        resolve(this.tck_channel.id)
+                    } catch (e) {}
                 })
-                    
-                
-
             }
         })
     }
 
-    exist (id = null){
+    exist (id = null, falsy = false){
         if (!id){
             if (!(this.id_member && this.guild_id))
                 return console.error(`class mal initialisée`.red)
@@ -253,10 +219,15 @@ module.exports = class {
         }            
         else{
             if (!exist)
-                this.delete(id)
+                if (falsy)
+                    this.delete(id)
 
             return true
         }
+    }
+
+    existOrDelete (id = null){
+        return this.exist(id, true)
     }
 
     getID (){
@@ -267,10 +238,21 @@ module.exports = class {
         return 0
     }
 
+    getOwner (id = null){
+        if (!id)
+            id = this.getID()
+        
+        if (!this.exist(id, true))
+            return 0
+        
+        return this.client.db.get(`tickets.${id}.member_id`)
+        
+    }
+
     delete (id = null){
         return new Promise(async (resolve, reject) => {
             if (!id)
-                if (this.exist())
+                if (this.existOrDelete())
                     id = this.getID()
                 else return
 
@@ -286,6 +268,34 @@ module.exports = class {
                     resolve()
                 })
             
+        })
+    }
+
+    isSupport (id = this.member_id){
+        if (!this.client.db.exist(`guilds.${this.guild_id}.settings.support_role`))
+            return false
+        if (!this.guild_handler.roles.has(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)))
+            return false
+        
+        this.guild_handler = this.client.guilds.resolve(this.guild_id)
+
+        if (!this.guild_handler.users.has(id))
+            return false
+        
+        if (this.guild_handler.users.resolve(id).roles.has(this.client.db.get(`guilds.${this.guild_id}.settings.support_role`)))
+            return true
+        
+        return false
+    }
+
+    addMember (id, id2 = null){
+        return new Promise(async (resolve, reject) => {
+            if (!this.client.users.has(id2 ? id2 : id) || !this.exist(id2 ? null : id))
+                reject('membre inconnu ou ticket inexistant')
+                
+            this.client.channels.resolve(id2 ? id : this.getID()).updateOverwrite(id2 ? id2 : id, { VIEW_CHANNEL: true, SEND_MESSAGES: true }).then(() => {
+                resolve()
+            })
         })
     }
 }

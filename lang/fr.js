@@ -14,6 +14,22 @@ module.exports = class {
                 seconds: 'secondes'
             },
 
+            types: {
+                number: 'nombre',
+                channel: 'salon',
+                user: 'utilisateur',
+                member: 'membre',
+                role: 'rôle',
+                guild: 'guilde',
+                server: 'serveur'
+            },
+
+            global: {
+                no_arg_single: (number) => `L'argument \`\`n°${number}\`\` n'existe pas et doit être spécifié`,
+                arg_invalid_type_single: (arg, type) => `L'argument \`\`${arg}\`\` devrait être de type \`\`${type}\`\``,
+                error: 'Il s\'est produit une erreur :/ bip boup !'
+            },
+
             tickets: {
                 notice_default_title: 'Informations Utiles',
                 notice_default_description: (prefix) => `Dans ce ticket, détaillez votre demande.\n
@@ -30,14 +46,17 @@ module.exports = class {
                 (Y compris le staff du bot Ulity)
             
                 __**Pour gérer ce ticket**__\n
-                \`\`${prefix}close\`\` : pour fermer le ticket\n
-                \`\`${prefix}add <@Mention | ID>\`\` : ajouter une personne au ticket\n
-                \`\`${prefix}remove <@Mention | ID>\`\` : supprimer les personnes au ticket\n`,
+                \`\`${prefix}ticket-close\`\` : pour fermer le ticket\n
+                \`\`${prefix}ticket-add <@Mention | ID>\`\` : ajouter une personne au ticket\n
+                \`\`${prefix}ticket-remove <@Mention | ID>\`\` : supprimer les personnes au ticket\n`,
 
 
 
                 already_created_single: (id) => `Ton ticket existe déjà, il se trouve là: <#${id}>, mais si il est là ! Rooooooh`,
-                created_single: (id) => `Ooooh :open_mouth: un nouveau ticket viens d'apparaitre: <#${id}> `
+                created_single: (id) => `Ooooh :open_mouth: un nouveau ticket viens d'apparaitre: <#${id}>`,
+                deleted_single: 'Ooh, je crois qu\'on l\'a perdu. Ah non, c\'est juste toi qu\'a supprimé le ticket :open_mouth:',
+                added_single: (id) => `Plus on est de fou et plus on rit, vous avez ajouté <@${id}> au ticket`,
+                added_notification_single: (id) => `Ajout de <@${id}> au ticket !`
 
             }
         }
@@ -47,7 +66,12 @@ module.exports = class {
         let final = this.language
 
         _code.split('.').forEach(i => {
-            final = final[i]; 
+            try{
+                final = final[i];
+            }
+            catch(e){
+                final = undefined
+            }
         })
 
         return final
@@ -57,8 +81,10 @@ module.exports = class {
         let value = this.parseCode(_code)
 
         switch (typeof value) {
-            case 'function': return value(args);
-            default: return value;
+            case 'function':
+                return value(...args)
+            default: 
+                return value
         }
     }
 

@@ -16,7 +16,7 @@ module.exports = class {
 
         if (this.permission == "" || this.permission == null)
             return true
-        if (this.permission == true)
+        if (this.permission)
             return true
 
         try{
