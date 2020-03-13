@@ -8,6 +8,8 @@ module.exports.client = new Discord.Client();
 module.exports.config = require('./config/config.json');
 module.exports.lang = new (require(`./lib/lang`))(this.config.default.lang);
 
+/* require('./web_server/main'); // perte de motivation */
+
 fs.readdir(`${__dirname}/bases`, (err, files) => {
     files.forEach(file => {
         let x = require(`${__dirname}/bases/${file}`);
@@ -23,3 +25,5 @@ this.client.login(this.config.bot.token)
     else
         console.error(e)   
 })
+
+
