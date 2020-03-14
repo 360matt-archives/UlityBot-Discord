@@ -1,0 +1,10 @@
+{
+    "bot": {
+        "token": "it's precious",
+        "owners": ["it's my id lmao"]
+    },
+    "default": {
+        "lang": "fr",
+        "prefix": "u!"
+    }
+}
