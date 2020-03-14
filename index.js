@@ -17,14 +17,16 @@ fs.readdir(`${__dirname}/bases`, (err, files) => {
         if (typeof x.run !== 'undefined')
             x.run();
     })
+
+    this.client.login(this.config.bot.token)
+    .catch((e) => {
+        if (e.code === "TOKEN_INVALID")
+            console.error(this.lang.get('bot.token_invalid'));
+        else
+            console.error(e)
+    })
 });
 
-this.client.login(this.config.bot.token)
-.catch((e) => {
-    if (e.code === "TOKEN_INVALID")
-        console.error(this.lang.get('bot.token_invalid'));
-    else
-        console.error(e)
-})
+
 
 

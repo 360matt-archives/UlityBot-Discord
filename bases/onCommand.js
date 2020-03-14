@@ -1,6 +1,19 @@
 const main = require('../index');
+
+const { Structures } = require('discord.js');
 const fs = require(`fs`);
-const time = require('../lib/time');
+const cooldown = require('../modules/cooldown');
+
+Structures.extend('Message', Message => {
+    class MessageExtended extends Message {
+      constructor(client, data, channel) {
+        super(client, data, channel);
+        this.argsman = new (require('../lib/argsman'))(this);
+      }
+    }
+    return MessageExtended;
+  });
+
 
 if (main.commands == null)
     main.commands = {};
@@ -23,41 +36,28 @@ fs.readdir(`${__dirname}/../commands`, (err, files) => {
     })
 });
 
-class msg_class {
-    constructor (msg){
-        for (let x in msg)
-            this[x] = msg[x];
-
-        this.argsman = new (require('../lib/argsman'))(this);
-    }
-    set (name, content){
-        this[name] = content;
-    }
-    
-}
-
 main.client.on('message', (msg) => {
     if (msg.author.bot)
         return;
     if (!msg.content.startsWith(main.config.default.prefix))
         return;
 
-    let msg_object = new msg_class(msg);
+    msg.args = msg.content.slice(main.config.default.prefix.length).trim().split(/ +/g);
+    msg.command = msg.args.shift().toLowerCase();
 
-    msg_object.set("args", msg.content.slice(main.config.default.prefix.length).trim().split(/ +/g));
-    msg_object.set("command", msg_object.args.shift().toLowerCase());
-
-    if (typeof main.aliases[msg_object.command] !== 'undefined')
-        msg_object.set("command", main.aliases[msg_object.command]);
-    else if (!fs.existsSync(`${__dirname}/../commands/${msg_object.command}.js`)){
-        msg_object.channel.send(main.lang.get('global.unknown_command', msg_object.command))
+    if (typeof main.aliases[msg.command] !== 'undefined')
+        msg.command = main.aliases[msg.command];
+    else if (!fs.existsSync(`${__dirname}/../commands/${msg.command}.js`)){
+        msg.channel.send(main.lang.get('global.unknown_command', msg.command));
         return;
     }
 
-    let cmd_object = require(`${__dirname}/../commands/${msg_object.command}.js`);
+    let cmd_object = require(`${__dirname}/../commands/${msg.command}.js`);
     if (typeof cmd_object.run !== 'undefined'){
-        if (check(msg_object, cmd_object))
-            cmd_object.run(msg_object, msg_object.args);
+        if (check(msg, cmd_object)){
+            cmd_object.run(msg, msg.args);
+            after(msg, cmd_object);
+        }
     }
     else
         msg_object.channel.send(main.lang.get('global.unknown_command', msg_object.command))
@@ -65,55 +65,34 @@ main.client.on('message', (msg) => {
 })
 
 function check (msg, cmd_o){
-    if (!cmd_o.data)
-        return true
+    if (cmd_o.data){
+        console.log(msg); // debug
 
-    console.log(msg);
-
-
-    if (msg.channel.type === 'dm'){
-        if (cmd_o.data.dm !== null)
-            if (!cmd_o.data.dm) {
-                // dm insupporté
-                msg.channel.send(main.lang.get('errors.dm_insupported', msg.command))
-                return false;
-            }
-    }
-    else {
-        if (typeof cmd_o.data.permission !== 'undefined'){
-            if (!msg.channel.guild.members.resolve(msg.author.id).hasPermission(cmd_o.data.permission)){
-                // no permission
-                msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission))
-                return false
-            }
+        if (msg.channel.type === 'dm' && !cmd_o.data.dm){
+            // dm insupporté
+            msg.channel.send(main.lang.get('errors.dm_insupported', msg.command))
+            return false;
         }
-    }
-    if (typeof cmd_o.data.permission !== 'undefined'){
-        if (cmd_o.data.permission == false){
-            if (!main.config.bot.owners.includes(msg.author.id)){
-                // no permission
-                msg.channel.send(main.lang.get('errors.ownership_only', msg.command))
-                return false;
-            }
-                    
+        else if (typeof cmd_o.data.permission !== 'undefined' && !msg.member.hasPermission(cmd_o.data.permission)){
+            // no permission
+            msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission))
+            return false
         }
-    }
-
-    let cooldown = new main.db("cooldown").db;
-
-    if (typeof cmd_o.data.cooldown !== 'undefined'){
-        let path = `${msg.author.id}.${msg.command}`;
-        if (cooldown.has(path).value()){
-            let cooldownFinished = cooldown.get(path).value();
-            if (cooldownFinished > new Date().getTime()){
-                // cooldown restricted
-                let timeLeft = cooldownFinished - new Date().getTime() 
-                msg.channel.send(main.lang.get('errors.cooldown_left', msg.command, time.textual(timeLeft)));
-                return false;
-            }
+        if (cmd_o.data.permission == false && !main.config.bot.owners.includes(msg.author.id)){
+            // no permission owner
+            msg.channel.send(main.lang.get('errors.ownership_only', msg.command))
+            return false;
         }
-
+        if (!cooldown.canUse(msg.author.id, msg.command) && !main.config.bot.owners.includes(msg.author.id)){
+            // if need wait cooldown
+            msg.channel.send(main.lang.get('errors.cooldown_left', msg.command, cooldown.textualLeft(msg.author.id, msg.command)));
+            return false;
+        }
     }
     
     return true;
+}
+
+function after (msg, cmd_o) {
+    cooldown.applique(msg.author.id, msg.command);
 }
