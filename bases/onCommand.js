@@ -70,17 +70,26 @@ function check (msg, cmd_o){
 
         if (msg.channel.type === 'dm' && !cmd_o.data.dm){
             // dm insupporté
-            msg.channel.send(main.lang.get('errors.dm_insupported', msg.command))
+            msg.channel.send(main.lang.get('errors.dm_insupported', msg.command));
             return false;
         }
-        else if (typeof cmd_o.data.permission !== 'undefined' && !msg.member.hasPermission(cmd_o.data.permission)){
-            // no permission
-            msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission))
-            return false
+        else if (typeof cmd_o.data.permission !== 'undefined'){
+            try {
+                if (!msg.member.hasPermission(cmd_o.data.permission)){
+                    // no permission
+                    msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission));
+                    return false;
+                }
+            } catch (e) {
+                console.error(e);
+                msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission));
+                return false;
+            }
+
         }
         if (cmd_o.data.permission == false && !main.config.bot.owners.includes(msg.author.id)){
             // no permission owner
-            msg.channel.send(main.lang.get('errors.ownership_only', msg.command))
+            msg.channel.send(main.lang.get('errors.ownership_only', msg.command));
             return false;
         }
         if (!cooldown.canUse(msg.author.id, msg.command) && !main.config.bot.owners.includes(msg.author.id)){

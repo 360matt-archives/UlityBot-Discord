@@ -1,8 +1,7 @@
 const main = require('../index');
 
 module.exports.data = {
-    permission: "MANAGE_MESSAGES",
-    cooldown: 10
+    permission: "MANAGE_MESSAGES"
 }
 
 
