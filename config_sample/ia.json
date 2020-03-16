@@ -1,0 +1,9 @@
+[
+    {
+        "phrase": "when a user type this",
+        "response": [
+            "I reply",
+            "Or I reply too"
+        ]
+    }
+]

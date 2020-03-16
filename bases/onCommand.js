@@ -52,6 +52,8 @@ main.client.on('message', (msg) => {
         return;
     }
 
+    msg.delete(); // delete command caller
+
     let cmd_object = require(`${__dirname}/../commands/${msg.command}.js`);
     if (typeof cmd_object.run !== 'undefined'){
         if (check(msg, cmd_object)){
@@ -65,24 +67,32 @@ main.client.on('message', (msg) => {
 })
 
 function check (msg, cmd_o){
+    if (msg.channel.type !== 'dm')
+        console.log(main.lang.get("bot.command_executed", msg.author.tag, msg.member.id, msg.command, msg.guild.name, msg.guild.id))
+    else
+        console.log(main.lang.get("bot.command_executed", msg.author.tag, msg.member.id, msg.command))
+
     if (cmd_o.data){
-        console.log(msg); // debug
 
         if (msg.channel.type === 'dm' && !cmd_o.data.dm){
             // dm insupporté
             msg.channel.send(main.lang.get('errors.dm_insupported', msg.command));
+            console.log(main.lang.get("bot.command_check_failed.dm_insupported"));
             return false;
         }
         else if (typeof cmd_o.data.permission !== 'undefined'){
+            let permission = cmd_o.data.permission;
             try {
-                if (!msg.member.hasPermission(cmd_o.data.permission)){
+                if (!msg.member.hasPermission(permission)){
                     // no permission
-                    msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission));
+                    msg.channel.send(main.lang.get('errors.not_permission', msg.command, permission));
+                    console.log(main.lang.get("bot.command_check_failed.not_permission", permission));
                     return false;
                 }
             } catch (e) {
                 console.error(e);
-                msg.channel.send(main.lang.get('errors.not_permission', msg.command, cmd_o.data.permission));
+                msg.channel.send(main.lang.get('errors.not_permission', msg.command, permission));
+                console.log(main.lang.get("bot.command_check_failed.not_permission", permission));
                 return false;
             }
 
@@ -90,11 +100,14 @@ function check (msg, cmd_o){
         if (cmd_o.data.permission == false && !main.config.bot.owners.includes(msg.author.id)){
             // no permission owner
             msg.channel.send(main.lang.get('errors.ownership_only', msg.command));
+            console.log(main.lang.get("bot.command_check_failed.owner_only"));
             return false;
         }
         if (!cooldown.canUse(msg.author.id, msg.command) && !main.config.bot.owners.includes(msg.author.id)){
             // if need wait cooldown
-            msg.channel.send(main.lang.get('errors.cooldown_left', msg.command, cooldown.textualLeft(msg.author.id, msg.command)));
+            let time_remaining = cooldown.textualLeft(msg.author.id, msg.command);
+            msg.channel.send(main.lang.get('errors.cooldown_left', msg.command, time_remaining));
+            console.log(main.lang.get("bot.command_check_failed.cooldown_not_reached", time_remaining));
             return false;
         }
     }
@@ -103,5 +116,6 @@ function check (msg, cmd_o){
 }
 
 function after (msg, cmd_o) {
+
     cooldown.applique(msg.author.id, msg.command);
 }

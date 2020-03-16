@@ -32,7 +32,14 @@ module.exports.expressions = {
     },
     bot: {
         token_invalid: "Le " + "token".cyan + " dans le fichier de configuration" + " n'est pas correct".red,
-        ready: (users, servers) => 'Le bot s\'est '.cyan + 'lancé'.green + ' servant '.cyan + `${users}`.yellow + ' utilisateurs dans '.cyan + `${servers}`.yellow + ' serveurs'.cyan
+        ready: (users, servers) => 'Le bot s\'est '.cyan + 'lancé'.green + ' servant '.cyan + `${users}`.yellow + ' utilisateurs dans '.cyan + `${servers}`.yellow + ' serveurs'.cyan,
+        command_executed: (user_tag, user_id, command, guild_name = "DM", guild_id = "0") => `${user_tag} `.magenta + `(${user_id}) `.grey + `[${guild_name} `.magenta + `(${guild_id})]`.grey + ' a éxécuté la commande '.cyan + `${command}`.yellow,
+        command_check_failed: {
+            dm_insupported: '  --> refusé: DM non supporté'.red,
+            not_permission: (flag) => `  --> Refusé: N'a pas la permission`.red + `${flag}`.yellow,
+            owner_only: '  --> Refusé: Commande réservée aux propriétaires'.red,
+            cooldown_not_reached: (time_remaining) => '  --> Refusé: cooldown non atteint '.red + `${time_remaining}`.yellow
+        }
     },
     global: {
         unknown_command: (command) => emojis.failed + `La commande ${quote(command)} est inconnue`,
