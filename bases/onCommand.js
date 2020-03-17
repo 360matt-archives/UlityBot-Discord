@@ -37,33 +37,37 @@ fs.readdir(`${__dirname}/../commands`, (err, files) => {
 });
 
 main.client.on('message', (msg) => {
-    if (msg.author.bot)
-        return;
-    if (!msg.content.startsWith(main.config.default.prefix))
-        return;
+    try{
+        if (msg.author.bot)
+            return;
+        if (!msg.content.startsWith(main.config.default.prefix))
+            return;
 
-    msg.args = msg.content.slice(main.config.default.prefix.length).trim().split(/ +/g);
-    msg.command = msg.args.shift().toLowerCase();
+        msg.args = msg.content.slice(main.config.default.prefix.length).trim().split(/ +/g);
+        msg.command = msg.args.shift().toLowerCase();
 
-    if (typeof main.aliases[msg.command] !== 'undefined')
-        msg.command = main.aliases[msg.command];
-    else if (!fs.existsSync(`${__dirname}/../commands/${msg.command}.js`)){
-        msg.channel.send(main.lang.get('global.unknown_command', msg.command));
-        return;
-    }
-
-    msg.delete(); // delete command caller
-
-    let cmd_object = require(`${__dirname}/../commands/${msg.command}.js`);
-    if (typeof cmd_object.run !== 'undefined'){
-        if (check(msg, cmd_object)){
-            cmd_object.run(msg, msg.args);
-            after(msg, cmd_object);
+        if (typeof main.aliases[msg.command] !== 'undefined')
+            msg.command = main.aliases[msg.command];
+        else if (!fs.existsSync(`${__dirname}/../commands/${msg.command}.js`)){
+            msg.channel.send(main.lang.get('global.unknown_command', msg.command));
+            return;
         }
-    }
-    else
-        msg_object.channel.send(main.lang.get('global.unknown_command', msg_object.command))
 
+        msg.delete(); // delete command caller
+
+        let cmd_object = require(`${__dirname}/../commands/${msg.command}.js`);
+        if (typeof cmd_object.run !== 'undefined'){
+            if (check(msg, cmd_object)){
+                cmd_object.run(msg, msg.args);
+                after(msg, cmd_object);
+            }
+        }
+        else
+            msg_object.channel.send(main.lang.get('global.unknown_command', msg_object.command))
+    }
+    catch(e){
+        console.error(e);
+    }
 })
 
 function check (msg, cmd_o){

@@ -28,7 +28,8 @@ module.exports.expressions = {
             hours: "heures",
             minutes: "minutes",
             seconds: "secondes"
-        }
+        },
+        message_ia: "Message IA"
     },
     bot: {
         token_invalid: "Le " + "token".cyan + " dans le fichier de configuration" + " n'est pas correct".red,
@@ -61,6 +62,11 @@ module.exports.expressions = {
             ban_yourself: (id) => `<@${id}> tu veux que je te ban mai je suis trop fatigué, t'as juste à quitter le serveur ${quote("¯\\_(ツ)_/¯")}`,
             cant_ban_colleague: (target_id, sender_id) => emojis.failed + `<@${sender_id}>, impossible de bannir ton collègue <@${target_id}> Vous êtres trop mignon ensemble`,
             cant_ban_bot_owner: (id) => emojis.failed + `Non, <@${id}> est un dieu. c'est mon propriétaire, c'est ma viiiiiie :heart:`
+        },
+        clc: {
+            syntax: (command) => emojis.failed + `La syntaxe de la commande ${quote(command)} ${emojis.arrow_right} ${quote('<nombre de message>')}`,
+            range: (number, min, max) => emojis.failed + `Le nombre entré (${quote(number)}) n'est pas comprit entre min ${quote(min)} et max ${quote(max)}`,
+            deleted: (number) => emojis.success + `J'ai supprimé ${quote(number)} messages, trop fort :open_mouth:`
         }
     }
 }
