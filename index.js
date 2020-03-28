@@ -9,8 +9,6 @@ module.exports.config = require('./config/config.json');
 module.exports.lang = new (require(`./lib/lang`))(this.config.default.lang);
 module.exports.db = require('./lib/db');
 
-/* require('./web_server/main'); // perte de motivation */
-
 fs.readdir(`${__dirname}/bases`, (err, files) => {
     try{
         files.forEach(file => {
