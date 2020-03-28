@@ -34,11 +34,11 @@ module.exports.expressions = {
     bot: {
         token_invalid: "Le " + "token".cyan + " dans le fichier de configuration" + " n'est pas correct".red,
         ready: (users, servers) => 'Le bot s\'est '.cyan + 'lancé'.green + ' servant '.cyan + `${users}`.yellow + ' utilisateurs dans '.cyan + `${servers}`.yellow + ' serveurs'.cyan,
-        command_executed: (user_tag, user_id, command, guild_name = "DM", guild_id = "0") => `${user_tag} `.magenta + `(${user_id}) `.grey + `[${guild_name} `.magenta + `(${guild_id})]`.grey + ' a éxécuté la commande '.cyan + `${command}`.yellow,
+        command_executed: (user_tag, user_id, command, guild_name = "DM", guild_id = "0") => `${user_tag} `.magenta + `(${user_id}) `.grey + `[${guild_name} `.grey + `(${guild_id})]`.grey + ' a éxécuté la commande '.cyan + `${command}`.yellow,
         command_check_failed: {
             dm_insupported: '  --> refusé: DM non supporté'.red,
-            not_permission: (flag) => `  --> Refusé: N'a pas la permission`.red + `${flag}`.yellow,
-            owner_only: '  --> Refusé: Commande réservée aux propriétaires'.red,
+            not_permission: (flag) => `  --> Refusé: N'a pas la permission `.red + `${flag}`.yellow,
+            owner_only: '  --> Refusé: Commande réservée aux propriétaires du bot'.red,
             cooldown_not_reached: (time_remaining) => '  --> Refusé: cooldown non atteint '.red + `${time_remaining}`.yellow
         }
     },
@@ -61,7 +61,8 @@ module.exports.expressions = {
             banned_server_with_reason: (id, staff_id, reason) => `Ohhh :open_mouth:, <@${id}> vient d'être banni par <@${staff_id}>\n**Raison:** ${quote(reason)}`,
             ban_yourself: (id) => `<@${id}> tu veux que je te ban mai je suis trop fatigué, t'as juste à quitter le serveur ${quote("¯\\_(ツ)_/¯")}`,
             cant_ban_colleague: (target_id, sender_id) => emojis.failed + `<@${sender_id}>, impossible de bannir ton collègue <@${target_id}> Vous êtres trop mignon ensemble`,
-            cant_ban_bot_owner: (id) => emojis.failed + `Non, <@${id}> est un dieu. c'est mon propriétaire, c'est ma viiiiiie :heart:`
+            cant_ban_bot_owner: (id) => emojis.failed + `Non, <@${id}> est un dieu. c'est mon propriétaire, c'est ma viiiiiie :heart:`,
+            ban_bot_itself: (id) => emojis.failed + `Méchant <@!${id}>, comment oses-tu me bannir ? :cry:`
         },
         clc: {
             syntax: (command) => emojis.failed + `La syntaxe de la commande ${quote(command)} ${emojis.arrow_right} ${quote('<nombre de message>')}`,

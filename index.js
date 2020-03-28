@@ -12,21 +12,23 @@ module.exports.db = require('./lib/db');
 /* require('./web_server/main'); // perte de motivation */
 
 fs.readdir(`${__dirname}/bases`, (err, files) => {
-    files.forEach(file => {
-        let x = require(`${__dirname}/bases/${file}`);
-        if (typeof x.run !== 'undefined')
-            x.run();
-    })
+    try{
+        files.forEach(file => {
+            if (fs.lstatSync(`${__dirname}/bases/${file}`).isFile()){
+                let x = require(`${__dirname}/bases/${file}`);
+                if (typeof x.run !== 'undefined')
+                    x.run();
+            }
+        })
 
-    this.client.login(this.config.bot.token)
-    .catch((e) => {
-        if (e.code === "TOKEN_INVALID")
-            console.error(this.lang.get('bot.token_invalid'));
-        else
-            console.error(e)
-    })
+        this.client.login(this.config.bot.token)
+        .catch((e) => {
+            console.error((e.code === "TOKEN_INVALID") ? this.lang.get('bot.token_invalid') : e)
+        })
+    }
+    catch(e){
+        console.error(e)
+    }
 });
-
-
 
 

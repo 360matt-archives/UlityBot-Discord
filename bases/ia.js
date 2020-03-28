@@ -1,4 +1,4 @@
-const main = require('../index');
+/*const main = require('../index');
 const ia = require('../config/ia.json');
 
 const fs = require(`fs`);
@@ -114,7 +114,7 @@ function recodeVar (msg, content){
 
 function parseScript (msg, content){
 
-    let pattern = /(?:\[\[script\=)?([a-zA-z]+)(?:\]\])/;
+    let pattern = /(?:\[\[script\=)?([A-Za-z]+)(?:\]\])/;
     let matchScript = content.match(pattern);
 
     if (matchScript !== null)
@@ -174,4 +174,4 @@ function execScript (msg, script){
     else
         return null;
 
-}
+}*/
