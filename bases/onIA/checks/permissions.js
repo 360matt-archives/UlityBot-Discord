@@ -3,7 +3,7 @@ const Discord = require('discord.js')
 
 let list = []
 
-for (x in Discord.Permissions.FLAGS)
+for (let x in Discord.Permissions.FLAGS)
     list.push(x)
 
 module.exports = (obj, msg, script) => {

@@ -14,7 +14,7 @@ let listing = {
     rgx: []
 }
 
-for (i in ia){
+for (let i in ia){
     let phrase = ia[i]["phrase"]
 
     if (ia[i].justInclude)
@@ -44,14 +44,14 @@ main.client.on('message', (msg) => {
                 id = match.bestMatchIndex
         }
         if (!id) {
-            for (x in listing['justIncludes']){
+            for (let x in listing['justIncludes']){
                 if (content.includes(listing['justIncludes'][x])){
                     id = x
                     break
                 }
             }
             if (!id){
-                for (x in listing['rgx']){
+                for (let x in listing['rgx']){
                     let matchyy = content.match(listing['rgx'][x]);
     
                     if (matchyy !== null){

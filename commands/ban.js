@@ -26,7 +26,7 @@ module.exports.run = (msg, args) => {
                 member.ban().then((x, y) => {
                     if (!y){
                         msg.channel.send(main.lang.get("emojis.party"))
-                        let response = "commands.ban." + (msg.argsman.exist(1)) ? "banned_server_with_reason" : "banned_server"
+                        let response = "commands.ban." + (msg.argsman.exist(1) ? "banned_server_with_reason" : "banned_server")
                         msg.channel.send(main.lang.get(response, member.id, msg.author.id, msg.argsman.text(1)))
                     }
                     else{

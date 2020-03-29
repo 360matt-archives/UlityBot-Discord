@@ -74,8 +74,8 @@ main.client.on('message', (msg) => {
             }
         }
 
-        for (let x in cmdChecks)
-            if (cmdChecks[x](obj, msg, msg.command, msg.args) == false)
+        for (let x of cmdChecks)
+            if (x(obj, msg, msg.command, msg.args) == false)
                 return;
 
         let status = obj.run(msg, msg.args)

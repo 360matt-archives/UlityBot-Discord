@@ -55,8 +55,8 @@ module.exports.parseScript = (msg, content) => {
 function execScript (msg, script) {
     let obj = main.ia_scripts[script]
     if (typeof obj !== 'undefined'){
-        for (let x in cmdChecks)
-            if (cmdChecks[x](obj, msg, script) == false)
+        for (let x of cmdChecks)
+            if (x(obj, msg, script) == false)
                 return null;
             
         let response = obj.run(msg, msg.args)
