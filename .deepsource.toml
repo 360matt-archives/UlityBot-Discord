@@ -1,0 +1,3 @@
+[[analyzers]]
+name = "javascript"
+enabled = true
