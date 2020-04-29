@@ -8,6 +8,7 @@ module.exports.client = new Discord.Client();
 module.exports.config = require('./config/config.json');
 module.exports.lang = new (require(`./lib/lang`))(this.config.default.lang);
 module.exports.db = require('./lib/db');
+module.exports.mini_cache = []
 
 fs.readdir(`${__dirname}/bases`, (err, files) => {
     try{

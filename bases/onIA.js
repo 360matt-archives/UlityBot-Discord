@@ -6,13 +6,13 @@ const stringSimilarity = require('string-similarity');
 const randomInt = require('random-int');
 const md5 = require('md5');
 
-main.mini_cache = []
-
 let listing = {
     phrases: [],
     justIncludes: [],
     rgx: []
 }
+
+main.mini_cache["ia"] = []
 
 for (let i in ia){
     let phrase = ia[i]["phrase"]
@@ -25,8 +25,6 @@ for (let i in ia){
         listing["phrases"][i] = phrase
 }
 
-
-
 main.client.on('message', (msg) => {
     if (msg.author.bot || msg.content.startsWith(main.config.default.prefix))
         return;
@@ -35,7 +33,7 @@ main.client.on('message', (msg) => {
     let id = false;
 
     let t_md5 = md5(content)
-    if (main.mini_cache.includes(t_md5))
+    if (main.mini_cache["ia"].includes(t_md5))
         id = main.mini_cache[t_md5]
     else {
         if (listing["phrases"].length !== 0){
@@ -65,7 +63,7 @@ main.client.on('message', (msg) => {
     }
 
     if (id){
-        main.mini_cache[t_md5] = id
+        main.mini_cache["ia"][t_md5] = id
 
         let preResponse = ia[id]['response']
         if (typeof preResponse !== 'string')
