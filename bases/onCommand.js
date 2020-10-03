@@ -19,11 +19,18 @@ let pathCmdFolder = `${__dirname}/../commands`
 
 main.commands = [], main.aliases = []
 
+
+
 if (fs.existsSync(`${pathFolder}/checks`)){
+  cmdChecks.push(require(`${pathFolder}/checks/empty.js`))
+
     fs.readdir(`${pathFolder}/checks`, (err, files) => {
         files.forEach(file => {
             if (fs.lstatSync(`${pathFolder}/checks/${file}`).isFile())
+              if ($file =! "empty.js") {
                 cmdChecks.push(require(`${pathFolder}/checks/${file}`))
+
+              }
         })
     });
 }
@@ -59,20 +66,12 @@ main.client.on('message', (msg) => {
     try{
         if (msg.author.bot || !msg.content.startsWith(main.config.default.prefix))
             return;
-    
+
         msg.args = msg.content.slice(main.config.default.prefix.length).trim().split(/ +/g);
         msg.command = msg.args.shift().toLowerCase();
-        
+
         let obj = main.commands[msg.command]
-        if (obj == null){
-            let cmd = main.aliases[msg.command]
-            obj = main.commands[cmd]
-            msg.command = cmd
-            if (obj == null){
-                msg.channel.send(main.lang.get('global.unknown_command', msg.command))
-                return;
-            }
-        }
+    
 
         for (let x of cmdChecks)
             if (x(obj, msg, msg.command, msg.args) == false)
